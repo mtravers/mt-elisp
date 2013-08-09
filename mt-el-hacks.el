@@ -106,11 +106,19 @@
   (interactive)
   (ansi-color-apply-on-region (point-min) (point-max)))
 
+;;; ⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯
+(defvar *last-decoration*)
+
 (defun insert-random-decoration ()
   (interactive)
-  (let* ((lines (read-lines "/Volumes/revenant/b/j/resources.org"))
+  (let* ((lines (read-lines "/Volumes/revenant/b/j/borders.txt"))
 	 (line (nth (random (length lines)) lines)))
+    (setq *last-decoration* line)
     (insert line)))
+
+(defun insert-last-decoration ()
+  (interactive)
+  (insert *last-decoration*))
 
 ;;; Amazingly there is nothing like this to be found.
 ;;; Found here, very useful: http://ergoemacs.org/emacs/elisp_idioms_batch.html

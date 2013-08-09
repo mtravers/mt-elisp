@@ -23,7 +23,7 @@
     (">>" "⪢")
     (">>>" "⫸")				
     ("<<<" "⫷")
-    ("lambda" "λ")
+    ("lambda" "λ")			;this one is dangerous
     ("pi" "π")
     ))
 

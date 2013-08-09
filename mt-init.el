@@ -10,17 +10,24 @@
 (require 'mt-inversions)
 (require 'mt-ucs)
 
-;;; *** Kustomization *************************** 
-
+;;; Backups – http://www.emacswiki.org/emacs/BackupDirectory
+(setq
+   backup-by-copying t      ; don't clobber symlinks
+   backup-directory-alist
+    '(("." . "~/.saves"))    ; don't litter my fs tree
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)  
 
 ;;; Annotation
-(load "/misc/reposed/annot/src/annot.el")
+;;; doesn't work that well
+;(load "/misc/reposed/annot/src/annot")
 
-;;; Font support
+;;; Nicer fonts
 (add-hook 'text-mode-hook (lambda () (variable-pitch-mode t))) ;+++ unfortunately this turns it on for html
 (add-hook 'org-mode-hook (lambda () (variable-pitch-mode t)))
 (add-hook 'shell-mode-hook (lambda () (set-buffer-process-coding-system 'mule-utf-8 'mule-utf-8)))
-
 
 ;;; Smart quotes
 (require 'smart-quotes)
@@ -28,8 +35,10 @@
 ;;; html-mode-hook runs text-mode-hook, which is seems wrong, but this compensates for some of the lossage
 (add-hook 'html-mode-hook (lambda () (turn-off-smart-quotes))) 
 
+;;; Completions
 (dynamic-completion-mode t)
 
+;;; Key customization
 (define-key ctl-x-map "\C-r" 'revert-buffer)  ;C-x C-r is revert buffer
 ;;Z is too close to X for this to exist there:
 (global-unset-key "\C-z")
@@ -139,11 +148,10 @@ mouse-3: Remove current window from display")))))))
              (add-hook 'write-contents-hooks 'java-mode-untabify)))
 
 ;;; wish i could do this only when needed
-(load "/misc/reposed/clojure-mode/clojure-mode.el")
+(load "/misc/reposed/clojure-mode/clojure-mode")
 
 ;;; Misc language stuff
 
-;this can't be necessary any more? (push '("\\.js$" . javascript-mode) auto-mode-alist)
 (push '("\\.clj$" . clojure-mode) auto-mode-alist)
 (push '("\\.m$" . octave-mode) auto-mode-alist)
 
@@ -185,7 +193,7 @@ mouse-3: Remove current window from display")))))))
 	      (setq indent-tabs-mode nil)
 	      (define-key haml-mode-map "\C-m" 'newline-and-indent))))
 
-(ruby-setup)				;livin in the future
+;(ruby-setup)				;livin in the future
 	  
 ;;; *** Useful hacks *************************** 
 
@@ -194,8 +202,6 @@ mouse-3: Remove current window from display")))))))
   (interactive "nrows: \nncolumns: ")
   (let ((frame (car (cadr (current-frame-configuration)))))
     (set-frame-size frame cols rows)))
-
-;(load "~/reposed/twittering-mode/twittering-mode.el")
 
 ;;; *** Assorted trash *************************** 
 
@@ -243,10 +249,10 @@ mouse-3: Remove current window from display")))))))
 (ido-mode t)
 
 ;;; Textmate mode (also experimental)
-(add-to-list 'load-path "~/.emacs.d/vendor/textmate.el")
-(require 'textmate)
-(textmate-mode)
-(global-set-key (kbd "C-x C-g") 'textmate-goto-file)
+;; (add-to-list 'load-path "~/.emacs.d/vendor/textmate.el")
+;; (require 'textmate)
+;; (textmate-mode)
+;; (global-set-key (kbd "C-x C-g") 'textmate-goto-file)
 
 (prefer-coding-system 'utf-8)
 
