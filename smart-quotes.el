@@ -43,12 +43,14 @@ contexts, a right quotation mark will be inserted."
   :type 'regexp
   :group 'smart-quotes)
 
+;;; Patches smart-quotes.el
+;;; Use a less disturbing char #x55a for when full unicode is on.
 (defun smart-quotes-insert-single ()
   "Insert U+2018 LEFT SINGLE QUOTATION MARK if point is preceded
 by `smart-quotes-left-context'; U+2019 RIGHT SINGLE QUOTATION MARK
 otherwise."
   (interactive)
-  (ucs-insert (if (looking-back smart-quotes-left-context) #x2018 #x2019)))
+  (ucs-insert (if (looking-back smart-quotes-left-context) #x2018 #x55a)))
 
 (defun smart-quotes-insert-double ()
   "Insert U+201C LEFT DOUBLE QUOTATION MARK if point is preceded

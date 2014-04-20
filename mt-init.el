@@ -1,14 +1,16 @@
 ; -*- mode: emacs-lisp -*-
 
-(add-to-list 'default-frame-alist '(font . "Monaco-16"))
+(add-to-list 'default-frame-alist '(font . "Monaco-14"))
 
 ;;; +++ right way to compile these?
+(require 'mt-patches)
 (require 'mt-slime)
 (require 'mt-el-hacks)
-(require 'cdd-startup)
+;no more, sorry (require 'cdd-startup)
 (require 'mt-punctual)
 (require 'mt-inversions)
 (require 'mt-ucs)
+(require 'mt-private)
 
 ;;; Backups – http://www.emacswiki.org/emacs/BackupDirectory
 (setq
@@ -152,8 +154,15 @@ mouse-3: Remove current window from display")))))))
 
 ;;; Misc language stuff
 
-(push '("\\.clj$" . clojure-mode) auto-mode-alist)
-(push '("\\.m$" . octave-mode) auto-mode-alist)
+;;; No, not there despite library installed, wtf
+;;; (require 'ttl-mode)
+
+(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+(add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
+(add-to-list 'auto-mode-alist '("\\.sparql$" . sparql-mode))
+(add-to-list 'auto-mode-alist '("\\.rq$" . sparql-mode))
+; broken apparently?
+;(add-to-list 'auto-mode-alist '("\\.ttl$" . ttl-mode))
 
 ;;; Org mode
 
@@ -205,12 +214,9 @@ mouse-3: Remove current window from display")))))))
 
 ;;; *** Assorted trash *************************** 
 
-;(add-to-list 'load-path (expand-file-name "e:/emacs-20.6/site/jde-2.2.5/lisp"))
 ;(add-to-list 'load-path (expand-file-name "~/emacs/site/semantic"))
 ;(add-to-list 'load-path (expand-file-name "~/emacs/site/speedbar"))
 ;(add-to-list 'load-path (expand-file-name "~/emacs/site/elib"))
-;(require 'jde)
-;(setq ps-lpr-command "print")
 
 ;;; attempt to get rid of unreadable light green font color (not working)
 ;;; not working here
@@ -219,7 +225,7 @@ mouse-3: Remove current window from display")))))))
    "frames which are surely restartable"
    '(:foreground "dark green")))
 
-(setq printer-name "CDD-PRINTER")	
+;Quxey eqiv? (setq printer-name "CDD-PRINTER")	
 (put 'set-goal-column 'disabled nil)
 
 ;;; Evernote mode (trial) (not working)
@@ -258,10 +264,17 @@ mouse-3: Remove current window from display")))))))
 
 ;; Solarize me!
 (add-to-list 'custom-theme-load-path "/misc/reposed/emacs-color-theme-solarized/")
-(load-theme 'solarized-light t)
+(load-theme 'solarized-dark t)
+(setq darkness t)
+
 ;;; Actually since it is inverted, these set the opposite *ground
 (set-face-background 'mode-line "#00aacc")
 (set-face-foreground 'mode-line "#444444")
+
+(defun invert-theme ()
+  (interactive)
+  (load-theme (if darkness 'solarized-light 'solarized-dark) t)
+  (setf darkness (not darkness)))
 
 ;;; Trial run 
 ;;; (global-hl-line-mode -1)
@@ -277,5 +290,7 @@ mouse-3: Remove current window from display")))))))
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
+;;; Dash is great (Mac only)
+(global-set-key "\C-cd" 'dash-at-point)
 
 (provide 'mt-init)

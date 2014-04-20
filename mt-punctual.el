@@ -1,6 +1,7 @@
 ;;; see M-x abbrev-mode; ~/Downloads/typopunct.el
 ;;; Would have used abbrev-mode but it stupidly encodes a restriction to alphanumerics in C code!
 ;;; Todo: an easy undo. (But using C-Q space to terminate works to suppress)
+;;; See http://stackoverflow.com/questions/18620187/how-can-i-revert-fancy-lambdas-after-an-edit
 
 (defvar punctuals 
   '(("--" "–")

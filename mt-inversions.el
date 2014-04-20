@@ -16,21 +16,22 @@
   (mapcar 'flip-car
 	  (string-to-list s)))
 
-(defun invert-string (s)
+(defun flip-string (s)
   (concat (reverse (mapcar 'flip-char
 			   (string-to-list s)))))
 
-(defun invert-region (start end)
+(defun flip-region (start end)
+  "Replace region with an flipped copy"
   (interactive "r")
   (let ((s (buffer-substring-no-properties start end)))
     (delete-region start end)
-    (insert (invert-string s))))
+    (insert (flip-string s))))
 
 (defun reverse-string (s)
   (concat (reverse (string-to-list s))))
 
 ;; +++ there seems to be an existing fn with this name!
-(defun reverse-region (start end)
+<(defun reverse-region (start end)
   (interactive "r")
   (let ((s (buffer-substring-no-properties start end)))
     (delete-region start end)
