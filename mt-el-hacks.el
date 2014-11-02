@@ -1,7 +1,9 @@
 ;;; -*- encoding : utf-8 -*-
-;;; ::: Word count
 
-;;; ::: Augment dired to launch files with 'l' (launch) and 'r' (reveal in finder)
+;;; ◇⟐◈ Dired augmentation ◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐
+;;; Launch files with 'l' 
+;;; Reveal files in finder with 'r'
+;;; OS specific and have only filled in the ones I am using.
 
 (defun dired-launch-command ()
   (interactive)
@@ -15,13 +17,11 @@
    nil
    (dired-get-marked-files t current-prefix-arg)))
 
-;;; Uses script found here (place in ~/bin/reveal)
-;;; http://mrox.net/blog/2008/08/09/learning-the-terminal-on-the-mac-part-4-bringing-finder-and-terminal-together/
 (defun dired-reveal-command ()
   (interactive)
   (dired-do-shell-command 
    (ecase system-type	      
-     (darwin "~/bin/reveal"))
+     (darwin (concat mt-elisp-directory "bin/reveal")))
    nil
    (dired-get-marked-files t current-prefix-arg)))
 
@@ -47,6 +47,7 @@
 ;;; TODO: would be nice if there was a copied string (eg from browser error page) but no region it would use that.
 ;;; TODO: error handling
 ;;; TODO: handle missing line number
+;;; TODO analog for Clojure backtraces (which can be java or clojure)
 ;;; Surely this is already in emacs somewhere?
 (defun visit-region (start end)
   (interactive "r")
@@ -74,6 +75,7 @@
 
 ;;; Start a shell with a command 
 ;;; eg:   (startup-shell "*server*" "cd /project/ruby; script/server")
+;;; TODO would be nice to have errors in one of these alert the user. 
 (defun startup-shell (name command)
   (send-to-shell (shell name) command))
 
@@ -83,7 +85,9 @@
   (interactive)
   (ansi-color-apply-on-region (point-min) (point-max)))
 
-;;; ⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯⤰⤯
+;;; ◇⟐◈ Decorativeness ◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐
+
+(defvar border-file (concat mt-elisp-directory "data/borders.txt"))
 
 (defvar *last-decoration*)
 
@@ -101,22 +105,27 @@
   (interactive)
   (insert *last-decoration*))
 
-(defun insert-decorative-frame ()
-  (interactive)
-  (insert-decorative-frame-1 (random-decoration)))
+(defun insert-decorative-frame (start end)
+  (interactive "r")
+  (insert-decorative-frame-1 (random-decoration) start end))
 
-(defun insert-decorative-frame-last ()
-  (interactive)
-  (insert-decorative-frame-1 *last-decoration*))
+(defun insert-decorative-frame-last (start end)
+  (interactive "r")
+  (insert-decorative-frame-1 *last-decoration* start end))
 
-(defun insert-decorative-frame-1 (border)
+;; Crudely tries to surround the region. Oddly region ~= selection and no easy way to get selection?
+(defun insert-decorative-frame-1 (border start end)
   (setq *last-decoration* border)
+  (goto-char end)
+  (insert "\n")
   (insert border)
-  (insert "\n\n")
+  (insert "\n")
+  (goto-char start)
+  (insert "\n")
   (insert border)
+  (insert "\n")
   (previous-line))
 
-;;; Amazingly there is nothing like this to be found.
 ;;; Found here, very useful: http://ergoemacs.org/emacs/elisp_idioms_batch.html
 (defun read-lines (fPath)
   "Return a list of lines of a file at FPATH."
@@ -130,5 +139,25 @@
   (set-frame-parameter
      nil 'fullscreen
      (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
+
+;;; ??? What was this for?
+(defun yank-current-file-name ()
+  "Insert file name of current buffer.
+If repeated, insert text from buffer instead."
+  (interactive)
+  (if (buffer-file-name (current-buffer))
+      (kill-new (buffer-file-name (current-buffer)))
+    (beep)))
+	 
+(defun yank-chrome-url ()
+ "Yank current URL from Chrome"
+  (interactive)
+  (require 'apples-mode)
+  (apples-do-applescript "tell application \"Google Chrome\"
+	get URL of active tab of first window
+end tell"
+			 #'(lambda (url status script)
+			     ;; comes back with quotes which we strip off
+			     (insert (subseq url 1 (1- (length url)))))))
 
 (provide 'mt-el-hacks)

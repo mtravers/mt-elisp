@@ -1,26 +1,35 @@
 ; -*- mode: emacs-lisp -*-
 
+(defvar mt-elisp-directory (file-name-directory load-file-name))
+
 (add-to-list 'default-frame-alist '(font . "Monaco-14"))
 
 ;;; +++ right way to compile these?
 (require 'mt-patches)
 (require 'mt-slime)
 (require 'mt-el-hacks)
-;no more, sorry (require 'cdd-startup)
 (require 'mt-punctual)
 (require 'mt-inversions)
 (require 'mt-ucs)
 (require 'mt-private)
+(require 'side-projects)
 
 ;;; Backups – http://www.emacswiki.org/emacs/BackupDirectory
+;;; +++ Seems broken
 (setq
    backup-by-copying t      ; don't clobber symlinks
    backup-directory-alist
-    '(("." . "~/.saves"))    ; don't litter my fs tree
+    '(("." . "~/.saves"))    ; don't litter my fs tree (something is smashing this var, it's now  ((".*" . "/var/folders/pg/y132_m3s05gdxrjggbt4_2280000gp/T/")))
    delete-old-versions t
+   delete-by-moving-to-trash t
    kept-new-versions 6
    kept-old-versions 2
    version-control t)  
+
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 ;;; Annotation
 ;;; doesn't work that well
@@ -28,6 +37,7 @@
 
 ;;; Nicer fonts
 (add-hook 'text-mode-hook (lambda () (variable-pitch-mode t))) ;+++ unfortunately this turns it on for html
+(add-hook 'eww-mode-hook (lambda () (variable-pitch-mode t))) 
 (add-hook 'org-mode-hook (lambda () (variable-pitch-mode t)))
 (add-hook 'shell-mode-hook (lambda () (set-buffer-process-coding-system 'mule-utf-8 'mule-utf-8)))
 
@@ -149,15 +159,11 @@ mouse-3: Remove current window from display")))))))
              (make-local-variable 'write-contents-hooks)
              (add-hook 'write-contents-hooks 'java-mode-untabify)))
 
-;;; wish i could do this only when needed
-(load "/misc/reposed/clojure-mode/clojure-mode")
-
 ;;; Misc language stuff
 
 ;;; No, not there despite library installed, wtf
 ;;; (require 'ttl-mode)
 
-(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
 (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
 (add-to-list 'auto-mode-alist '("\\.sparql$" . sparql-mode))
 (add-to-list 'auto-mode-alist '("\\.rq$" . sparql-mode))
@@ -225,22 +231,7 @@ mouse-3: Remove current window from display")))))))
    "frames which are surely restartable"
    '(:foreground "dark green")))
 
-;Quxey eqiv? (setq printer-name "CDD-PRINTER")	
 (put 'set-goal-column 'disabled nil)
-
-;;; Evernote mode (trial) (not working)
-;;; See file://localhost/Users/mt/Downloads/evernote-mode-0_41/doc/readme_en.html#sec-7
-
-;; (require 'evernote-mode)
-;; (setq evernote-username "mtraven") ; optional: you can use this username as default.
-;; ;(setq evernote-enml-formatter-command '("w3m" "-dump" "-I" "UTF8" "-O" "UTF8")) ; option
-;; (global-set-key "\C-cec" 'evernote-create-note)
-;; (global-set-key "\C-ceo" 'evernote-open-note)
-;; (global-set-key "\C-ces" 'evernote-search-notes)
-;; (global-set-key "\C-ceS" 'evernote-do-saved-search)
-;; (global-set-key "\C-cew" 'evernote-write-note)
-;; (global-set-key "\C-cep" 'evernote-post-region)
-;; (global-set-key "\C-ceb" 'evernote-browser)
 
 ;;; For slime-js (+++ experimental)
 (autoload 'js2-mode "js2-mode" nil t)
@@ -292,5 +283,36 @@ mouse-3: Remove current window from display")))))))
 
 ;;; Dash is great (Mac only)
 (global-set-key "\C-cd" 'dash-at-point)
+
+(define-minor-mode sensitive-mode
+  "For sensitive files like password lists.
+It disables backup creation and auto saving.
+
+With no argument, this command toggles the mode.
+Non-null prefix argument turns on the mode.
+Null prefix argument turns off the mode."
+  ;; The initial value.
+  nil
+  ;; The indicator for the mode line.
+  " Sensitive"
+  ;; The minor mode bindings.
+  nil
+  (if (symbol-value sensitive-mode)
+      (progn
+	;; disable backups
+	(set (make-local-variable 'backup-inhibited) t)	
+	;; disable auto-save
+	(if auto-save-default
+	    (auto-save-mode -1)))
+    ;resort to default value of backup-inhibited
+    (kill-local-variable 'backup-inhibited)
+    ;resort to default auto save setting
+    (if auto-save-default
+	(auto-save-mode 1))))
+
+(setq auto-mode-alist
+ (append '(("\\.sensitive$" . sensitive-mode))
+	 auto-mode-alist))
+
 
 (provide 'mt-init)
