@@ -92,7 +92,7 @@
 (defvar *last-decoration*)
 
 (defun random-decoration ()
-  (let* ((lines (read-lines "/Volumes/revenant/b/j/borders.txt")))
+  (let* ((lines (read-lines border-file)))
     (nth (random (length lines)) lines)))
 
 (defun insert-decorative-border ()
@@ -126,13 +126,6 @@
   (insert "\n")
   (previous-line))
 
-;;; Found here, very useful: http://ergoemacs.org/emacs/elisp_idioms_batch.html
-(defun read-lines (fPath)
-  "Return a list of lines of a file at FPATH."
-  (with-temp-buffer
-    (insert-file-contents fPath)
-    (split-string (buffer-string) "\n" t)))
-    
 (defun toggle-fullscreen ()
   "Toggle full screen"
   (interactive)

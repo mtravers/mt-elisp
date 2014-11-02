@@ -5,14 +5,13 @@
 (add-to-list 'default-frame-alist '(font . "Monaco-14"))
 
 ;;; +++ right way to compile these?
+(require 'mt-utils)
 (require 'mt-patches)
 (require 'mt-slime)
 (require 'mt-el-hacks)
 (require 'mt-punctual)
 (require 'mt-inversions)
 (require 'mt-ucs)
-(require 'mt-private)
-(require 'side-projects)
 
 ;;; Backups – http://www.emacswiki.org/emacs/BackupDirectory
 ;;; +++ Seems broken
