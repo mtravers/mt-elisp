@@ -11,3 +11,4 @@
 	(b (nth 5 fb)))
     (or (> (car a) (car b)) (and (= (car a) (car b)) (> (cadr a) (cadr b))))))
 
+(provide 'mt-utils)

@@ -142,15 +142,29 @@ If repeated, insert text from buffer instead."
       (kill-new (buffer-file-name (current-buffer)))
     (beep)))
 	 
+(defun applescript-yank (script)
+  (require 'apples-mode)
+  (apples-do-applescript
+   script
+   #'(lambda (url status script)
+       ;; comes back with quotes which we strip off
+       (insert (subseq url 1 (1- (length url))))))
+  )
+
 (defun yank-chrome-url ()
  "Yank current URL from Chrome"
   (interactive)
-  (require 'apples-mode)
-  (apples-do-applescript "tell application \"Google Chrome\"
+  (applescript-yank "tell application \"Google Chrome\"
 	get URL of active tab of first window
-end tell"
-			 #'(lambda (url status script)
-			     ;; comes back with quotes which we strip off
-			     (insert (subseq url 1 (1- (length url)))))))
+end tell"))
+
+(defun yank-chrome-selection ()
+ "Yank current selection from Chrome"
+  (interactive)
+  (applescript-yank "tell application \"Google Chrome\"
+	copy selection of active tab of first window
+end tell
+set theText to the clipboard" )
+  )
 
 (provide 'mt-el-hacks)
