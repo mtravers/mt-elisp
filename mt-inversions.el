@@ -31,7 +31,7 @@
   (concat (reverse (string-to-list s))))
 
 ;; +++ there seems to be an existing fn with this name!
-<(defun reverse-region (start end)
+(defun reverse-region (start end)
   (interactive "r")
   (let ((s (buffer-substring-no-properties start end)))
     (delete-region start end)
