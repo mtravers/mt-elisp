@@ -7,6 +7,7 @@
 
 (defun dired-launch-command ()
   (interactive)
+  (setq current-prefix-arg t)		;ensure just current file rather than marked set
   (dired-do-shell-command 
    (ecase system-type	      
      (gnu/linux 
@@ -166,5 +167,22 @@ end tell"))
 end tell
 set theText to the clipboard" )
   )
+
+;;; Keyboard macros
+(defun call-kbd-macro (m) (let ((last-kbd-macro m)) (call-last-kbd-macro)))
+
+(defun append-to-file (string filename)
+  (write-region string nil filename t))
+
+(defun save-kbd-macro (symbol)
+  (interactive "SName for last kbd macro (saved to ~/.emacs): ")
+  (name-last-kbd-macro symbol)
+  (let ((def `(defun ,symbol (&optional arg)
+		(interactive "p")
+		(or arg (setq arg 1))
+		(dotimes (i arg)
+		  (call-kbd-macro ,(symbol-function symbol))))))
+    (append-to-file (pp-to-string def) "~/.emacs")
+    ))
 
 (provide 'mt-el-hacks)
