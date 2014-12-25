@@ -37,7 +37,11 @@
 ;;; Nicer fonts
 (add-hook 'text-mode-hook (lambda () (variable-pitch-mode t))) ;+++ unfortunately this turns it on for html
 (add-hook 'eww-mode-hook (lambda () (variable-pitch-mode t))) 
-(add-hook 'org-mode-hook (lambda () (variable-pitch-mode t)))
+(add-hook 'org-mode-hook
+	  (lambda ()
+	    (variable-pitch-mode t)
+	    (outline-flag-region nil nil nil) ;opens subtree at point
+	    ))
 (add-hook 'shell-mode-hook (lambda () (set-buffer-process-coding-system 'mule-utf-8 'mule-utf-8)))
 
 ;;; Smart quotes
