@@ -72,19 +72,13 @@
     ("WHITE " -)
     ))
 
-; (therefore because) ; cute but only applies to one pair...
-; 
-; ([with *] )
-; ([but **] -)
-
-
 ;;; Only gives 1-away chars, eg
 ; (ucs-char-all-inversions "ERROR-BARRED WHITE CIRCLE")
 ; > ("ERROR-BARRED BLACK CIRCLE" "ERROR-BARRED WHITE SQUARE" "WHITE CIRCLE")
 ; need to do cross product
 
 (defun ucs-char-insert-all-inversions (charname)
-  (interactive "cCharacter")
+  (interactive "cCharacter")		;TODO this is wrong, look at M-x insert-char and do what it does
   (mapcar #'ucs-insert-char-by-name (ucs-char-all-inversions charname)))
 
 (defun ucs-insert-char-by-name (charname)

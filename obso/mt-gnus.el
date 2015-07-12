@@ -1,4 +1,4 @@
-;;; not working, how do i tell it my gmail address?
+;;; not working
 
 (setq gnus-select-method
       '(nnimap "mtravers@gmail"

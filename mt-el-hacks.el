@@ -48,7 +48,7 @@
 ;;; TODO: would be nice if there was a copied string (eg from browser error page) but no region it would use that.
 ;;; TODO: error handling
 ;;; TODO: handle missing line number
-;;; TODO analog for Clojure backtraces (which can be java or clojure)
+;;; TODO analog for Clojure backtraces (which can be java or clojure) (Cider seems to handle this so not really necessary)
 ;;; Surely this is already in emacs somewhere?
 (defun visit-region (start end)
   (interactive "r")

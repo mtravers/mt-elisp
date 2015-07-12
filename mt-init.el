@@ -2,9 +2,50 @@
 
 (defvar mt-elisp-directory (file-name-directory load-file-name))
 
+(require 'package)
+(add-to-list 'package-archives
+	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+
+(package-initialize)
+
+;;; Load problems, argh
+;(require 'save-visited-files)
+;(turn-on-save-visited-files-mode)
+
+(require 'saveplace) ; Saves and restores location within files
+(setq-default save-place t)
+
+(which-function-mode)
+
+;;; Make unicode fonts work
+;;; With this and smart-quotes-mode, need to patch smart-quotes-insert-single, see mt-patches.el
+;; I suspect this is causing performance problems, so disabled
+; (require 'unicode-fonts)
+; (unicode-fonts-setup)
+
+;;; NRepl
+(add-to-list 'same-window-buffer-names "*nrepl*") ; not sure
+
+;;; Enable shift-arrowkeys for moving between panes
+(windmove-default-keybindings)
+(setq windmove-wrap-around t )
+
+(require 'dired-toggle-sudo)
+(require 'dired)
+(define-key dired-mode-map (kbd "C-c C-s") 'dired-toggle-sudo)
+(eval-after-load 'tramp
+ '(progn
+    ;; Allow to use: /sudo:user@host:/path/to/file
+    (add-to-list 'tramp-default-proxies-alist
+		  '(".*" "\\`.+\\'" "/ssh:%h:"))))
+
 (add-to-list 'default-frame-alist '(font . "Monaco-14"))
 
-;;; +++ right way to compile these?
+;;; TODO right way to compile these?
 (require 'mt-utils)
 (require 'mt-patches)
 (require 'mt-slime)
@@ -63,6 +104,7 @@
 (global-set-key [delete] 'delete-char)
 (global-set-key [kp-delete] 'delete-char)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "M-s") 'ispell-word) ;was a bunch of regex highlight stuff that i never used eg hi-lock-face-buffer
 
 ;; turn on font-lock mode
 (global-font-lock-mode t)
@@ -124,8 +166,7 @@ mouse-3: Remove current window from display")))))))
  '(send-mail-function (quote smtpmail-send-it))
  '(smtpmail-smtp-server "smtp.gmail.com")
  '(smtpmail-smtp-service 587)
- '(tool-bar-mode nil)
- '(tramp-default-method "scpx")
+  '(tramp-default-method "scpx")
  '(vc-hg-program "/usr/local/bin/hg"))
 
 (custom-set-faces
@@ -275,7 +316,7 @@ mouse-3: Remove current window from display")))))))
 (require 'paren)
 (setq show-paren-style 'expression) ; looks good with non-bold show-paren-match face
 ;(setq show-paren-style 'parenthesis)
-(show-paren-mode +1)
+(show-paren-mode 1)	
 (setq show-paren-delay 0.33)
 
 ;;; Show full pathnames in frame header
@@ -326,5 +367,7 @@ Null prefix argument turns off the mode."
       (make-directory parent-directory t))))
 
 (add-to-list 'find-file-not-found-functions #'maybe-create-non-existent-directory)
+
+(ns-toggle-toolbar)
 
 (provide 'mt-init)

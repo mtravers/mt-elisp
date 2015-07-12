@@ -1,5 +1,5 @@
-;;; Integrate with mt-ucs, which has conceptual inversions! +++
-;;; Apologies to Scott Kim
+;;; Apologies to ɯı⋊ ʇʇoɔS
+;;; TODO Integrate with mt-ucs, which has conceptual inversions!
 
 ;;; Maps chars to their upside-down equivalent
 ;;; Source is in dia/src/uni-iun.lisp, elisp doesn't have #\ syntax so easier to maintain there.

@@ -1,6 +1,7 @@
-;;; see M-x abbrev-mode; ~/Downloads/typopunct.el
+;;; see M-x abbrev-mode; also http://www.emacswiki.org/emacs/typopunct.el
 ;;; Would have used abbrev-mode but it stupidly encodes a restriction to alphanumerics in C code!
-;;; Todo: an easy undo. (But using C-Q space to terminate works to suppress)
+;;; TODO: make into a mode so it can be toggled easily
+;;; TODO: an easy undo. (But using C-Q space to terminate works to suppress)
 ;;; See http://stackoverflow.com/questions/18620187/how-can-i-revert-fancy-lambdas-after-an-edit
 
 (defvar punctuals 
