@@ -43,7 +43,10 @@
     (add-to-list 'tramp-default-proxies-alist
 		  '(".*" "\\`.+\\'" "/ssh:%h:"))))
 
-(add-to-list 'default-frame-alist '(font . "Monaco-14"))
+;;; Mac 
+;;; (add-to-list 'default-frame-alist '(font . "Monaco-14"))
+;;; Ubuntu
+
 
 ;;; TODO right way to compile these?
 (require 'mt-utils)
@@ -169,12 +172,7 @@ mouse-3: Remove current window from display")))))))
   '(tramp-default-method "scpx")
  '(vc-hg-program "/usr/local/bin/hg"))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(variable-pitch ((t (:height 1.2 :width normal :family "Gill Sans")))))
+
 
 (when window-system
   ;; enable wheelmouse support by default
@@ -299,7 +297,7 @@ mouse-3: Remove current window from display")))))))
 
 ;; Solarize me!
 (add-to-list 'custom-theme-load-path "/misc/reposed/emacs-color-theme-solarized/")
-(load-theme 'solarized-dark t)
+(load-theme 'solarized t)
 (setq darkness t)
 
 ;;; Actually since it is inverted, these set the opposite *ground
@@ -368,6 +366,12 @@ Null prefix argument turns off the mode."
 
 (add-to-list 'find-file-not-found-functions #'maybe-create-non-existent-directory)
 
-(ns-toggle-toolbar)
+(require 'cl)
+
+(ecase system-type	      
+       (gnu/linux 
+	(require 'init-ubuntu))
+       (darwin
+	(require 'init-mac)))
 
 (provide 'mt-init)
