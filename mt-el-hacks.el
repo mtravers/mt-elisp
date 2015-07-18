@@ -1,6 +1,7 @@
 ;;; -*- encoding : utf-8 -*-
 
 ;;; ◇⟐◈ Dired augmentation ◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐
+
 ;;; Launch files with 'l' 
 ;;; Reveal files in finder with 'r'
 ;;; OS specific and have only filled in the ones I am using.
@@ -28,6 +29,8 @@
 
 (add-hook 'dired-load-hook
 	  (lambda (&rest ignore)
+	    (define-key dired-mode-map
+	      (kbd "C-c C-s") 'dired-toggle-sudo)
 	    (define-key dired-mode-map
 	      "l" 'dired-launch-command)
 	    (define-key dired-mode-map

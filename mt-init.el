@@ -34,9 +34,6 @@
 (windmove-default-keybindings)
 (setq windmove-wrap-around t )
 
-(require 'dired-toggle-sudo)
-(require 'dired)
-(define-key dired-mode-map (kbd "C-c C-s") 'dired-toggle-sudo)
 (eval-after-load 'tramp
  '(progn
     ;; Allow to use: /sudo:user@host:/path/to/file
@@ -53,6 +50,10 @@
 (require 'mt-punctual)
 (require 'mt-inversions)
 (require 'mt-ucs)
+
+(require 'dired-toggle-sudo)
+
+
 
 ;;; Backups – http://www.emacswiki.org/emacs/BackupDirectory
 ;;; +++ Seems broken
