@@ -6,6 +6,7 @@
 ;;; Reveal files in finder with 'r'
 ;;; OS specific and have only filled in the ones I am using.
 
+;;; Older version 
 (defun dired-launch-command ()
   (interactive)
   (setq current-prefix-arg t)		;ensure just current file rather than marked set
@@ -14,10 +15,33 @@
      (gnu/linux 
       (if (search "redhat" system-configuration)
 	  "gvfs-open"
-	"gnome-open"))	;right for gnome (ubuntu), not necessarily for other systems
+	;; TODO actually this is no good, it blocks rather than launches
+	;; (dired-do-async-shell-command doesn't seem to work)
+	;; Weird, doing it from command line works the right way
+	"xdg-open"))	;right for gnome (ubuntu), not necessarily for other systems
      (darwin "open"))
    nil
    (dired-get-marked-files t current-prefix-arg)))
+
+;;; Newer version (not yet tested on Mac)
+(defun dired-launch-command ()
+  "Open marked files (or the file the cursor is on) from dired."
+  (interactive)
+  (let* ((files (dired-get-marked-files t current-prefix-arg))
+         (n (length files))
+	 (opener (ecase system-type	      
+		   (gnu/linux 
+		    (if (search "redhat" system-configuration)
+			"gvfs-open"
+		      "xdg-open"))	;right for gnome (ubuntu), not necessarily for other systems
+		   (darwin "open"))))
+    (when (or (<= n 3)
+              (y-or-n-p (format "Open %d files?" n)))
+      (dolist (file files)
+        (call-process opener
+                      nil 0 nil file)))))
+
+(define-key dired-mode-map (kbd "s-o") 'ublt/dired-open-native)
 
 (defun dired-reveal-command ()
   (interactive)
