@@ -5,25 +5,6 @@
 ;;; Launch files with 'l' 
 ;;; Reveal files in finder with 'r'
 ;;; OS specific and have only filled in the ones I am using.
-
-;;; Older version 
-(defun dired-launch-command ()
-  (interactive)
-  (setq current-prefix-arg t)		;ensure just current file rather than marked set
-  (dired-do-shell-command 
-   (ecase system-type	      
-     (gnu/linux 
-      (if (search "redhat" system-configuration)
-	  "gvfs-open"
-	;; TODO actually this is no good, it blocks rather than launches
-	;; (dired-do-async-shell-command doesn't seem to work)
-	;; Weird, doing it from command line works the right way
-	"xdg-open"))	;right for gnome (ubuntu), not necessarily for other systems
-     (darwin "open"))
-   nil
-   (dired-get-marked-files t current-prefix-arg)))
-
-;;; Newer version (not yet tested on Mac)
 (defun dired-launch-command ()
   "Open marked files (or the file the cursor is on) from dired."
   (interactive)
@@ -41,7 +22,6 @@
         (call-process opener
                       nil 0 nil file)))))
 
-(define-key dired-mode-map (kbd "s-o") 'ublt/dired-open-native)
 
 (defun dired-reveal-command ()
   (interactive)
@@ -95,17 +75,16 @@
 
 (defun send-to-shell (buffer command)
   (with-current-buffer buffer
-    (let ((start (point-max))
-	  (command (concat command "\n")))
-      (goto-char start)
-    (insert-string command)
-    (comint-send-string (get-buffer-process buffer) command))))
+    (let ((command (concat command "\n")))
+      (goto-char (point-max))
+      (insert-string command)
+      (comint-send-input))))
 
 ;;; Start a shell with a command 
-;;; eg:   (startup-shell "*server*" "cd /project/ruby; script/server")
+;;; eg:   (startup-shell "*server*" "/project/ruby" "script/server")
 ;;; TODO would be nice to have errors in one of these alert the user. 
-(defun startup-shell (name command)
-  (send-to-shell (shell name) command))
+(defun startup-shell (name dir command)
+  (send-to-shell (shell name) (format "cd %s;%s" dir command)))
 
 ;;; Another thing that is almost there but not quite
 ;;; might need (require 'ansi-color)

@@ -8,6 +8,7 @@
 
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
+
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 (package-initialize)
@@ -54,9 +55,6 @@
 (require 'mt-inversions)
 (require 'mt-ucs)
 
-(require 'dired-toggle-sudo)
-
-
 
 ;;; Backups – http://www.emacswiki.org/emacs/BackupDirectory
 ;;; +++ Seems broken
@@ -85,7 +83,10 @@
 (add-hook 'org-mode-hook
 	  (lambda ()
 	    (variable-pitch-mode t)
-	    (outline-flag-region nil nil nil) ;opens subtree at point
+;;; breaks in updated org-mode, fuck me
+;;;	    (outline-flag-region nil nil nil) ;opens subtree at point
+;;; not working
+	    (outline-flag-region (point) (+ (point) 1) nil) ;opens subtree at point
 	    ))
 (add-hook 'shell-mode-hook (lambda () (set-buffer-process-coding-system 'mule-utf-8 'mule-utf-8)))
 
@@ -299,15 +300,17 @@ mouse-3: Remove current window from display")))))))
 ;; Solarize me!
 (add-to-list 'custom-theme-load-path "/misc/reposed/emacs-color-theme-solarized/")
 (load-theme 'solarized t)
-(setq darkness t)
+(setq darkness nil)
 
+;;; ugly
 ;;; Actually since it is inverted, these set the opposite *ground
-(set-face-background 'mode-line "#00aacc")
-(set-face-foreground 'mode-line "#444444")
+;(set-face-background 'mode-line "#00aacc")
+;(set-face-foreground 'mode-line "#444444")
 
 (defun invert-theme ()
   (interactive)
-  (load-theme (if darkness 'solarized-light 'solarized-dark) t)
+  (set-frame-parameter nil 'background-mode (if darkness 'light 'dark))
+  (enable-theme 'solarized)
   (setf darkness (not darkness)))
 
 ;;; Trial run 
