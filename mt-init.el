@@ -211,8 +211,6 @@ mouse-3: Remove current window from display")))))))
 (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
 (add-to-list 'auto-mode-alist '("\\.sparql$" . sparql-mode))
 (add-to-list 'auto-mode-alist '("\\.rq$" . sparql-mode))
-; broken apparently?
-;(add-to-list 'auto-mode-alist '("\\.ttl$" . ttl-mode))
 
 ;;; Org mode
 
@@ -278,12 +276,13 @@ mouse-3: Remove current window from display")))))))
 (put 'set-goal-column 'disabled nil)
 
 ;;; For slime-js (+++ experimental)
-(autoload 'js2-mode "js2-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(global-set-key [f5] 'slime-js-reload)
-(add-hook 'js2-mode-hook
-          (lambda ()
-            (slime-js-minor-mode 1)))
+;; This is broken and probably unneeded
+;; (autoload 'js2-mode "js2-mode" nil t)
+;; (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+;; (global-set-key [f5] 'slime-js-reload)
+;; (add-hook 'js2-mode-hook
+;;           (lambda ()
+;;             (slime-js-minor-mode 1)))
 
 ;;; IDO mode, giving it a shakeout
 (require 'ido)
@@ -298,9 +297,10 @@ mouse-3: Remove current window from display")))))))
 (prefer-coding-system 'utf-8)
 
 ;; Solarize me!
-(add-to-list 'custom-theme-load-path "/misc/reposed/emacs-color-theme-solarized/")
-(load-theme 'solarized t)
-(setq darkness nil)
+(when window-system
+  (add-to-list 'custom-theme-load-path "/misc/reposed/emacs-color-theme-solarized/")
+  (load-theme 'solarized t)
+  (setq darkness nil))
 
 ;;; ugly
 ;;; Actually since it is inverted, these set the opposite *ground
