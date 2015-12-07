@@ -73,10 +73,6 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-;;; Annotation
-;;; doesn't work that well
-;(load "/misc/reposed/annot/src/annot")
-
 ;;; Nicer fonts
 (add-hook 'text-mode-hook (lambda () (variable-pitch-mode t))) ;+++ unfortunately this turns it on for html
 (add-hook 'eww-mode-hook (lambda () (variable-pitch-mode t))) 
@@ -110,6 +106,7 @@
 (global-set-key [kp-delete] 'delete-char)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "M-s") 'ispell-word) ;was a bunch of regex highlight stuff that i never used eg hi-lock-face-buffer
+(global-set-key (kbd "C-x g") 'magit-status)
 
 ;; turn on font-lock mode
 (global-font-lock-mode t)
@@ -227,30 +224,6 @@ mouse-3: Remove current window from display")))))))
 	    (define-key org-mode-map
 	      [(control return)] 'complete)))
 
-;;; Ruby stuff
-
-;; ;;; Probably all obso
-;; (defun ruby-setup ()
-;;   (add-to-list 'load-path "/misc/sourceforge/ruby/misc")
-;;   (add-to-list 'load-path  "/misc/downloads/emacs-rails")
-;;   (require 'inf-ruby)
-;;   (require 'rails)
-;;   ;; need to get rid of horrible tab behavior somehow. (+++ really linked with rails-minor-mode, but that has no hook?)
-;;   (add-hook 'ruby-mode-hook
-;; 	    (lambda ()
-;; 	      (local-set-key (kbd "<tab>")
-;; 			     'indent-for-tab-command))))
-
-(defun ruby-setup ()
-  ;; HAML
-  (add-to-list 'load-path "/misc/reposed/haml-mode")
-  (require 'haml-mode)
-  (add-hook 'haml-mode-hook
-	    (lambda ()
-	      (setq indent-tabs-mode nil)
-	      (define-key haml-mode-map "\C-m" 'newline-and-indent))))
-
-;(ruby-setup)				;livin in the future
 	  
 ;;; *** Useful hacks *************************** 
 
@@ -298,7 +271,7 @@ mouse-3: Remove current window from display")))))))
 
 ;; Solarize me!
 (when window-system
-  (add-to-list 'custom-theme-load-path "/misc/reposed/emacs-color-theme-solarized/")
+  (add-to-list 'custom-theme-load-path "/misc/repos/emacs-color-theme-solarized/")
   (load-theme 'solarized t)
   (setq darkness nil))
 
