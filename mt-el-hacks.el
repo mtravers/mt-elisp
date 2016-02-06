@@ -4,7 +4,7 @@
 
 ;;; Launch files with 'l' 
 ;;; Reveal files in finder with 'r'
-;;; OS specific and have only filled in the ones I am using.
+;;; OS specific; needs filling in for others
 (defun dired-launch-command ()
   "Open marked files (or the file the cursor is on) from dired."
   (interactive)
@@ -22,14 +22,19 @@
         (call-process opener
                       nil 0 nil file)))))
 
-
 (defun dired-reveal-command ()
+  "Reveal in Finder. Relies on shell script"
   (interactive)
   (dired-do-shell-command 
    (ecase system-type	      
      (darwin (concat mt-elisp-directory "bin/reveal")))
    nil
    (dired-get-marked-files t current-prefix-arg)))
+
+;;; Alternate method on OSX if for some reason reveal script isn't working
+'(apples-do-applescript "tell application \"Finder\"
+	open POSIX file \"<fnam>\"
+end tell")
 
 (add-hook 'dired-load-hook
 	  (lambda (&rest ignore)
@@ -96,6 +101,7 @@
 
 (defvar border-file (concat mt-elisp-directory "data/borders.txt"))
 
+;;; TODO this should be per-buffer
 (defvar *last-decoration*)
 
 (defun random-decoration ()
@@ -153,9 +159,9 @@ If repeated, insert text from buffer instead."
   (require 'apples-mode)
   (apples-do-applescript
    script
-   #'(lambda (url status script)
+   #'(lambda (result status script)
        ;; comes back with quotes which we strip off
-       (insert (subseq url 1 (1- (length url))))))
+       (insert (subseq result 1 (1- (length result))))))
   )
 
 (defun yank-chrome-url ()
@@ -190,5 +196,19 @@ set theText to the clipboard" )
 		  (call-kbd-macro ,(symbol-function symbol))))))
     (append-to-file (pp-to-string def) "~/.emacs")
     ))
+
+;;; I'm getting lazy.
+
+;;; Not really working
+(defun link-region ()
+  "Make an org-mode hyperlink from region to current chrome url as in yank-chrome-url"
+  (interactive)
+  (call-kbd-macro
+   [91 2 91 escape 120 121 97 110 107 45 99 104 114 32 117 32 return 24 24 6 67108896 134217730 134217730 91 5]))
+
+(defun yank-quote ()
+  "Make an org-mode blockqupte from current browser selection as in yank-chrome-selection"
+  (call-kbd-macro
+   [91 2 91 escape 120 121 97 110 107 45 99 104 114 32 117 32 return 24 24 6 67108896 134217730 134217730 91 5]))
 
 (provide 'mt-el-hacks)

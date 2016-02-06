@@ -3,15 +3,24 @@
 (defvar mt-elisp-directory (file-name-directory load-file-name))
 
 (require 'package)
+
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
-
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/"))
-
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
+;;; necessary right now to get 0.10.0 version of cider
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
+
+;;; Not working despite explict documentation that it should
+;(setq package-load-list '((cider "0.10.0") all))
+
 (package-initialize)
+
+(unless (package-installed-p 'cider)
+  (package-install 'cider))
 
 ;;; Load problems, argh
 ;(require 'save-visited-files)
@@ -31,8 +40,13 @@
 ;;; NRepl
 (add-to-list 'same-window-buffer-names "*nrepl*") ; not sure
 
-;;; Enable shift-arrowkeys for moving between panes
-(windmove-default-keybindings)
+;;; Enable alt-control-arrowkeys for moving between panes
+;;; Should work but doesn't
+;;; (windmove-default-keybindings '(meta control))
+(global-set-key (vector (list 'meta 'control 'down)) 'windmove-down)
+(global-set-key (vector (list 'meta 'control 'up)) 'windmove-up)
+(global-set-key (vector (list 'meta 'control 'left)) 'windmove-left)
+(global-set-key (vector (list 'meta 'control 'right)) 'windmove-right)
 (setq windmove-wrap-around t )
 
 (eval-after-load 'tramp
@@ -57,21 +71,21 @@
 
 
 ;;; Backups – http://www.emacswiki.org/emacs/BackupDirectory
-;;; +++ Seems broken
-(setq
-   backup-by-copying t      ; don't clobber symlinks
-   backup-directory-alist
-    '(("." . "~/.saves"))    ; don't litter my fs tree (something is smashing this var, it's now  ((".*" . "/var/folders/pg/y132_m3s05gdxrjggbt4_2280000gp/T/")))
-   delete-old-versions t
-   delete-by-moving-to-trash t
-   kept-new-versions 6
-   kept-old-versions 2
-   version-control t)  
+;;; +++ Seems broken – moved to proper customization.
+;; (setq
+;;    backup-by-copying t      ; don't clobber symlinks
+;;    backup-directory-alist
+;;     '(("." . "~/.saves"))    ; don't litter my fs tree (something is smashing this var, it's now  ((".*" . "/var/folders/pg/y132_m3s05gdxrjggbt4_2280000gp/T/")))
+;;    delete-old-versions t
+;;    delete-by-moving-to-trash t
+;;    kept-new-versions 6
+;;    kept-old-versions 2
+;;    version-control t)  
 
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+;; (setq backup-directory-alist
+;;       `((".*" . ,temporary-file-directory)))
+;; (setq auto-save-file-name-transforms
+;;       `((".*" ,temporary-file-directory t)))
 
 ;;; Nicer fonts
 (add-hook 'text-mode-hook (lambda () (variable-pitch-mode t))) ;+++ unfortunately this turns it on for html
@@ -225,6 +239,9 @@ mouse-3: Remove current window from display")))))))
 	      [(control return)] 'complete)))
 
 	  
+;;; export stopped working, this I am hoping fixes it.
+(require 'org-loaddefs)
+
 ;;; *** Useful hacks *************************** 
 
 ;; Sometimes frame size gets stuck, this can fix it
@@ -350,5 +367,13 @@ Null prefix argument turns off the mode."
 	(require 'init-ubuntu))
        (darwin
 	(require 'init-mac)))
+
+;;; Bell controls:
+(setq visible-bell nil)
+;;; Flash modeline instead of a beep
+(setq ring-bell-function (lambda ()
+			   (invert-face 'mode-line)
+			   (run-with-timer 0.1 nil 'invert-face 'mode-line)))
+
 
 (provide 'mt-init)
