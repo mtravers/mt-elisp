@@ -45,15 +45,15 @@ end tell")
 	    (define-key dired-mode-map
 	      "r" 'dired-reveal-command)))
 
-;;; ::: Search all buffers (enormously useful)
-
-;;; TODO Should probably filter out some buffers, maybe limit to files only (especially existing *Occurs* buffers!)
-;;; TODO order is weird, not sure why, buffer-list appears to return things in a good order.
+;;; ::: Search all file buffers (enormously useful)
 ;;; see also http://www.emacswiki.org/emacs/SearchBuffers
-;;; See also M-x multi-occur-in-matching-buffers
+
+(defun file-buffers ()
+  (remove-if-not #'buffer-file-name (buffer-list)))
+
 (defun search-all-buffers (string)
   (interactive "sSearch: ")
-  (occur-1 string nil (buffer-list nil)))
+  (multi-occur (file-buffers) string))
 
 ;;; Region is a Ruby-formatted backtrace line (eg "/project/ruby/vendor/plugins/rspec/lib/spec/runner.rb:45")
 ;;; TODO: better handling of directory defaults
@@ -160,9 +160,11 @@ If repeated, insert text from buffer instead."
   (apples-do-applescript
    script
    #'(lambda (result status script)
-       ;; comes back with quotes which we strip off
-       (insert (subseq result 1 (1- (length result))))))
-  )
+       ;; pull out part in quotes
+       (string-match "\"\\(.*\\)\"" result)
+       (let ((actual (match-string 1 result)))
+	 (print actual)
+	 (insert actual)))))
 
 (defun yank-chrome-url ()
  "Yank current URL from Chrome"

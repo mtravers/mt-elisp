@@ -26,6 +26,7 @@
 (require 'ac-cider)
 (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
 (add-hook 'cider-mode-hook 'ac-cider-setup)
+(add-hook 'cider-mode-hook 'eldoc-mode)	; echo-area arglists
 (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
 (eval-after-load "auto-complete"
   '(progn
@@ -45,5 +46,5 @@
 (defun cider--get-symbol-indent (symbol)
   nil)
 
-(define-key cider-repl-mode-map (kbd "C-c M-o")
+(define-key cider-repl-mode-map (kbd "C-c C-l")
   'cider-repl-clear-buffer)

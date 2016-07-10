@@ -1,0 +1,73 @@
+This file is a collection of stray vague desires for Emacs hacks and other notes.
+In some cases, the feature exists and to TODO is to get them into my head and workflow
+
+* Cider/Sline
+** why the fuck aren’t past values acessible? Prompt could be “(s23) sss> “ meaning i23 and o23 are bound to input and output.
+** get source/test file navigation working.
+** when a cider error pops up c-x c-o gets you BACK TO THE REPL wihtout having to go through a lot of fucking nonsense.
+
+
+* Multi-window keys
+I actually coded these, need to train myself to use them
+Or, supergoal: find better way to manage multiple windows, collections of them, etc.
+
+* BUG: Paren problem
+in org mode, extra close parens get inserted
+
+* BUG: yank-chrome-url borked
+used to work but gets extra text now, possibly due to a shell config thing
+
+* numerically paramerized/iterized keyboard macros 
+* vertical copy and paste (that I bet exists somewhere) (contet dec2012)
+	yes, picture-mode and rectangles, but I cant really get those working too well
+
+* Org mode
+** hack * and / in org-mode should work exactly like smart-parens (and quote too)
+**  The  blockquote syntax is horribly clunky, maybe replace it with ⪡ ⪢ or something like that flows off the keys.
+** imge paste
+ image paste should work in org mode, it can always just make a file and a link or something. (hm, tracked down to ns-get-pasteboard, below that it is C code so I guess I am SOL).
+** Evernote integration
+: http://sachachua.com/blog/2012/08/zomg-evernote-emacs/ :emacs: :writing:
+
+**  http://stackoverflow.com/questions/2138947/is-there-a-solution-to-automatically-synchronize-emacs-org-mode-with-one-of-the
+** BUG: rgrep → org file leaves the salient text collapsed and invisible
+** make inserting images simpler
+ Hm, a way in :emacs: to fix the image size problem?
+http://lists.gnu.org/archive/html/emacs-orgmode/2011-01/msg00249.html
+
+* Countdown timer 
+Eg for free writing exercises
+
+* Frictionless Timestamping
+Eg, paragraphs in org mode get a hidden annotation describing their time and other metadata. 
+
+* forward/backward by syllables.
+Wacky idea, could actually be useful for writing.
+Prior art? http://osdir.com/ml/gnu-emacs-sources-gnu/2015-02/msg00024.html
+But syllabification is hard: http://eprints.soton.ac.uk/264285/1/MarchandAdsettDamper_ISCA07.pdf
+https://en.wikipedia.org/wiki/Hyphenation_algorithm
+
+* Named places
+ So, anywhere you hit C-x C-p dropbox or some other defined name without having to go through all the rigamarole of pathnames. Sounds very easy and maybe already there.
+
+* Very easy version saving
+ a command to say, make a backup copy of this right now, snapshot it for later? 
+
+Hm:
+- (1) should create a git repository around the file if there isn’t one
+- (2) save and commit (maybe in a branch made for the occaasion)
+In one swell foop.
+
+Instead did it by hand with in-progress.org, so I can revert to non-stoned state if necessary. Gonna work on that God post.
+
+Supergoal: improve version handling. Maybe easiest thing is for everything to be a git repo with automatic commits on every file write.
+
+* Decorations
+: would be nice if decorative borders adapted to size of buffer. Almost surely not worth doing. Wish that was not the case.
+
+* Char abbrevs
+ make it easy to inline define new char-abbrevs (I wanted == to make an equivalence (3 bars). 
+
+*  shell buffers that are strongly bound to a regular buffer...
+hm not exactly shure how that would work, the /desire/ is a little mini-window for doing shell commands. This is not really a feature of the emacs style, or my emacs style anyway
+
