@@ -163,7 +163,6 @@ If repeated, insert text from buffer instead."
        ;; pull out part in quotes
        (string-match "\"\\(.*\\)\"" result)
        (let ((actual (match-string 1 result)))
-	 (print actual)
 	 (insert actual)))))
 
 (defun yank-chrome-url ()
@@ -212,5 +211,20 @@ set theText to the clipboard" )
   "Make an org-mode blockqupte from current browser selection as in yank-chrome-selection"
   (call-kbd-macro
    [91 2 91 escape 120 121 97 110 107 45 99 104 114 32 117 32 return 24 24 6 67108896 134217730 134217730 91 5]))
+
+(defun quick-quotes ()
+  "Converts my weird ⫸ notation into proper orgmode block quotes"
+  (interactive)
+  (while (search-forward "
+⫸ " nil t)
+    (delete-backward-char 2)
+    (insert "#+BEGIN_QUOTE
+" )
+    (end-of-line)
+    (insert "
+#+END_QUOTE" )))
+
+
+
 
 (provide 'mt-el-hacks)
