@@ -45,15 +45,17 @@ end tell")
 	    (define-key dired-mode-map
 	      "r" 'dired-reveal-command)))
 
-;;; ::: Search all file buffers (enormously useful)
-;;; see also http://www.emacswiki.org/emacs/SearchBuffers
-
 (defun file-buffers ()
   (remove-if-not #'buffer-file-name (buffer-list)))
 
-(defun search-all-buffers (string)
-  (interactive "sSearch: ")
-  (multi-occur (file-buffers) string))
+;;; see also http://www.emacswiki.org/emacs/SearchBuffers
+(defun search-all-buffers (arg string)
+  "Search all file buffers (or with prefix, all buffers) for a given string."
+  (interactive "P\nsSearch: ")
+  (multi-occur (if arg
+		   (buffer-list)
+		 (file-buffers))
+	       string))
 
 ;;; Region is a Ruby-formatted backtrace line (eg "/project/ruby/vendor/plugins/rspec/lib/spec/runner.rb:45")
 ;;; TODO: better handling of directory defaults
@@ -85,7 +87,8 @@ end tell")
       (insert-string command)
       (comint-send-input))))
 
-;;; Start a shell with a command 
+;;; Start a shell with a command.
+;;; Useful for scripted setup of dev environments
 ;;; eg:   (startup-shell "*server*" "/project/ruby" "script/server")
 ;;; TODO would be nice to have errors in one of these alert the user. 
 (defun startup-shell (name dir command)
