@@ -8,14 +8,14 @@
   "Insert Unicode chars whose name matches PATTERN. A prefix arg means verbose (each char is on its own line with name)"
   (interactive "sPattern:")
   (if word? (setf pattern (format "\\<%s\\>" pattern)))
-  (dolist (char-pair
-	   (remove-if-not #'(lambda (pair) (string-match pattern (car pair))) (ucs-names)))
-    (ucs-insert (cdr char-pair))
-    (when current-prefix-arg
-      (insert-tab)
-      (insert (car char-pair))
-      (insert ?\n)
-      )))
+  (maphash #'(lambda (name char)
+	       (when (string-match pattern name)
+		 (ucs-insert char)
+		 (when current-prefix-arg
+		   (insert-tab)
+		   (insert (car char-pair))
+		   (insert ?\n))))
+	   (ucs-names)))
 
 (defun string-replace (this withthat in)
   "replace THIS with WITHTHAT' in the string IN"
