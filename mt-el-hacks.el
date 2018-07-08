@@ -1,4 +1,4 @@
-;;; -*- encoding : utf-8 -*-
+;;; -*- encoding : utf-8; lexical-binding: t -*-
 
 ;;; ◇⟐◈ Dired augmentation ◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐
 
@@ -62,8 +62,6 @@ end tell")
 ;;; TODO: would be nice if there was a copied string (eg from browser error page) but no region it would use that.
 ;;; TODO: error handling
 ;;; TODO: handle missing line number
-;;; TODO analog for Clojure backtraces (which can be java or clojure) (Cider seems to handle this so not really necessary)
-;;; Surely this is already in emacs somewhere?
 (defun visit-region (start end)
   (interactive "r")
   (let* ((s (buffer-substring-no-properties start end))
@@ -158,7 +156,8 @@ If repeated, insert text from buffer instead."
       (kill-new (buffer-file-name (current-buffer)))
     (beep)))
 	 
-(defun applescript-yank (script)
+;;; Relies on lexical-binding: t in mode line
+(defun applescript-apply (f script)
   (require 'apples-mode)
   (apples-do-applescript
    script
@@ -166,14 +165,21 @@ If repeated, insert text from buffer instead."
        ;; pull out part in quotes
        (string-match "\"\\(.*\\)\"" result)
        (let ((actual (match-string 1 result)))
-	 (insert actual)))))
+	 (funcall f actual)))))
+  
+(defun applescript-yank (script)
+  (applescript-apply #'insert script))
+
+(defconst applescript-get-chrome-url
+  "tell application \"Google Chrome\"
+	get URL of active tab of first window
+end tell"
+  )
 
 (defun yank-chrome-url ()
  "Yank current URL from Chrome"
   (interactive)
-  (applescript-yank "tell application \"Google Chrome\"
-	get URL of active tab of first window
-end tell"))
+  (applescript-yank applescript-get-chrome-url))
 
 (defun yank-chrome-selection ()
  "Yank current selection from Chrome"
@@ -203,13 +209,6 @@ set theText to the clipboard" )
 
 ;;; I'm getting lazy.
 
-;;; Not really working
-(defun link-region ()
-  "Make an org-mode hyperlink from region to current chrome url as in yank-chrome-url"
-  (interactive)
-  (call-kbd-macro
-   [91 2 91 escape 120 121 97 110 107 45 99 104 114 32 117 32 return 24 24 6 67108896 134217730 134217730 91 5]))
-
 (defun yank-quote ()
   "Make an org-mode blockqupte from current browser selection as in yank-chrome-selection"
   (call-kbd-macro
@@ -227,7 +226,47 @@ set theText to the clipboard" )
     (insert "
 #+END_QUOTE" )))
 
+;;; https://imgur.com/E4EkEMf
+(defun donuts ()
+  (interactive)
+  (insert "🍩🍩🍩"))
 
+(defvar screenshot-directory "/Users/mt/Dropbox/Screenshots/")
 
+(defun org-include-image (directory file)
+  (let* ((file-clean (replace-regexp-in-string "\s" "_" file))
+	 (current-directory default-directory))
+    (copy-file (concat directory file)
+	       (concat current-directory file-clean))
+    (insert (format "\nfile:%s\n" file-clean))))
+
+(defun yank-latest-screenshot ()
+  (interactive)
+  (org-include-image screenshot-directory
+   (first (last (directory-files screenshot-directory)))))
+
+;;; TODO apply to DIRED? But can do by hand like:
+;;; (dolist (f '( "Screen Shot 2018-06-20 at 8.54.30 PM.png" "Screen Shot 2018-06-20 at 9.00.40 PM.png"... )) (org-include-image  "/Users/mt/Dropbox/work-macbook/to-home/"  f))
+
+;;; org-mode link from region to topmost chrome page
+;;; TODO should print and confirm link probably
+
+;;; not right yet, what if point/mark are inverted?
+;;; TODO should restore point
+(defun insert-around-region (before after)
+  (insert after)
+  (goto-char (mark t))
+  (insert before))
+
+;;; Idea_stupid: work in HTML mode as well
+(defun link-chrome ()
+  "Make an org-mode hyperlink from region to current chrome url"
+  (interactive)
+  (applescript-apply
+   #'(lambda (url)
+       (insert-around-region (concat "[[" url "][") "]]"))
+   applescript-get-chrome-url))
 
 (provide 'mt-el-hacks)
+
+

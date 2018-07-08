@@ -1,7 +1,8 @@
 ;;; *** SLIME and Lisp *************************** 
 
-(add-to-list 'load-path "/misc/repos/slime")
-(add-to-list 'load-path "/misc/repos/slime/contrib")
+; I'm assuming using this ancient version of slime is no longer a good idea?
+; (add-to-list 'load-path "/misc/repos/slime")
+; (add-to-list 'load-path "/misc/repos/slime/contrib")
 (setq slime-net-coding-system 'utf-8-unix)
 
 (defun slime-common ()
