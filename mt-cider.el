@@ -1,5 +1,6 @@
 (require 'cider)
 
+
 ;;; This implements the convention of foo.test.core as the test ns for foo.core.
 
 ;;; ⟥⟤⟥ Implement my preferred layout for tests.  ⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤
@@ -48,3 +49,6 @@
 
 (define-key cider-repl-mode-map (kbd "C-c C-l")
   'cider-repl-clear-buffer)
+
+;;; https://github.com/bhauman/lein-figwheel/wiki/Using-the-Figwheel-REPL-within-NRepl
+;;; cider-cljs-lein-repl set in customizations – doesn't work here.

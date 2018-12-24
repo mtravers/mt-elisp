@@ -1,5 +1,7 @@
 ; -*- mode: emacs-lisp -*-
 
+;;; ☒□ Packages □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
 (defvar mt-elisp-directory (file-name-directory load-file-name))
 
 (require 'package)
@@ -10,35 +12,29 @@
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
-;;; necessary right now to get 0.10.0 version of cider
+;;; necessary to get proper version of cider
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 
-;;; Not working despite explict documentation that it should
-;(setq package-load-list '((cider "0.10.0") all))
-
 (package-initialize)
 
-(unless (package-installed-p 'cider)
-  (package-install 'cider))
+;;; TODO right way to compile these?
+(require 'mt-utils)
+(require 'mt-patches)
+;(require 'mt-slime)
+(require 'mt-el-hacks)
+(require 'mt-mac-hacks)			;TODO conditionalize
+(require 'mt-punctual)
+(require 'mt-inversions)
+(require 'mt-ucs)
 
-;;; Load problems, argh
-;(require 'save-visited-files)
-;(turn-on-save-visited-files-mode)
+(cond ((eq system-type 'gnu/linux)
+       (require 'init-ubuntu))
+      ((eq system-type 'darwin)
+       (require 'init-mac)))
 
-(require 'saveplace) ; Saves and restores location within files
-(setq-default save-place t)
+;;; ☒□ Customizations □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-(which-function-mode)
-
-;;; Make unicode fonts work
-;;; With this and smart-quotes-mode, need to patch smart-quotes-insert-single, see mt-patches.el
-;; I suspect this is causing performance problems, so disabled
-; (require 'unicode-fonts)
-; (unicode-fonts-setup)
-
-;;; NRepl
-(add-to-list 'same-window-buffer-names "*nrepl*") ; not sure
 
 ;;; Enable alt-control-arrowkeys for moving between panes
 ;;; Should work but doesn't
@@ -47,64 +43,9 @@
 (global-set-key (vector (list 'meta 'control 'up)) 'windmove-up)
 (global-set-key (vector (list 'meta 'control 'left)) 'windmove-left)
 (global-set-key (vector (list 'meta 'control 'right)) 'windmove-right)
+
 (setq windmove-wrap-around t )
-
-(eval-after-load 'tramp
- '(progn
-    ;; Allow to use: /sudo:user@host:/path/to/file
-    (add-to-list 'tramp-default-proxies-alist
-		  '(".*" "\\`.+\\'" "/ssh:%h:"))))
-
-;;; Mac 
-;;; (add-to-list 'default-frame-alist '(font . "Monaco-14"))
-;;; Ubuntu
-
-
-;;; TODO right way to compile these?
-(require 'mt-utils)
-(require 'mt-patches)
-(require 'mt-slime)
-(require 'mt-el-hacks)
-(require 'mt-punctual)
-(require 'mt-inversions)
-(require 'mt-ucs)
-
-
-;;; Backups – http://www.emacswiki.org/emacs/BackupDirectory
-;;; +++ Seems broken – moved to proper customization.
-;; (setq
-;;    backup-by-copying t      ; don't clobber symlinks
-;;    backup-directory-alist
-;;     '(("." . "~/.saves"))    ; don't litter my fs tree (something is smashing this var, it's now  ((".*" . "/var/folders/pg/y132_m3s05gdxrjggbt4_2280000gp/T/")))
-;;    delete-old-versions t
-;;    delete-by-moving-to-trash t
-;;    kept-new-versions 6
-;;    kept-old-versions 2
-;;    version-control t)  
-
-;; (setq backup-directory-alist
-;;       `((".*" . ,temporary-file-directory)))
-;; (setq auto-save-file-name-transforms
-;;       `((".*" ,temporary-file-directory t)))
-
-;;; Nicer fonts
-(add-hook 'text-mode-hook (lambda () (variable-pitch-mode t))) ;+++ unfortunately this turns it on for html
-(add-hook 'eww-mode-hook (lambda () (variable-pitch-mode t))) 
-(add-hook 'org-mode-hook
-	  (lambda ()
-	    (variable-pitch-mode t)
-;;; breaks in updated org-mode, fuck me
-;;;	    (outline-flag-region nil nil nil) ;opens subtree at point
-;;; not working
-	    (outline-flag-region (point) (+ (point) 1) nil) ;opens subtree at point
-	    ))
-(add-hook 'shell-mode-hook (lambda () (set-buffer-process-coding-system 'mule-utf-8 'mule-utf-8)))
-
-;;; Smart quotes
-(require 'smart-quotes)
-(add-hook 'text-mode-hook (lambda () (turn-on-smart-quotes)))
-;;; html-mode-hook runs text-mode-hook, which is seems wrong, but this compensates for some of the lossage
-(add-hook 'html-mode-hook (lambda () (turn-off-smart-quotes))) 
+(put 'set-goal-column 'disabled nil)
 
 ;;; Completions
 (dynamic-completion-mode t)
@@ -149,6 +90,13 @@
 	     (toggle-word-wrap 1)
 	     ))
 
+;;; Bell controls:
+(setq visible-bell nil)
+;;; Flash modeline instead of a beep
+(setq ring-bell-function (lambda ()
+			   (invert-face 'mode-line)
+			   (run-with-timer 0.1 nil 'invert-face 'mode-line)))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -182,18 +130,133 @@ mouse-3: Remove current window from display")))))))
  '(send-mail-function (quote smtpmail-send-it))
  '(smtpmail-smtp-server "smtp.gmail.com")
  '(smtpmail-smtp-service 587)
-  '(tramp-default-method "scpx")
+ '(tramp-default-method "scpx")
  '(vc-hg-program "/usr/local/bin/hg"))
 
+;;; ☒□ Themes □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
+;; (defun zenburn ()
+;;   (interactive)
+;;   (load "zenburn")
+;;   (zenburn))
 
 (when window-system
-  ;; enable wheelmouse support by default
-  (mwheel-install)
-  ;; use extended compound-text coding for X clipboard
-  (set-selection-coding-system 'compound-text-with-extensions))
+  (add-to-list 'custom-theme-load-path "/misc/repos/emacs-color-theme-solarized/")
+  (load-theme 'solarized t)
+  (setq darkness nil))
 
-;;; Java stuff
+(defun invert-theme ()
+  (interactive)
+  (set-frame-parameter nil 'background-mode (if darkness 'light 'dark))
+  (enable-theme 'solarized)
+  (setf darkness (not darkness)))
+
+
+;;; ☒□ Fonts and Unicode □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+(prefer-coding-system 'utf-8)
+
+;;; Nicer fonts
+
+(add-hook 'text-mode-hook (lambda () (variable-pitch-mode t))) ;+++ unfortunately this turns it on for html
+(add-hook 'eww-mode-hook (lambda () (variable-pitch-mode t))) 
+(add-hook 'org-mode-hook
+	  (lambda ()
+	    (variable-pitch-mode t)))
+	    
+(add-hook 'shell-mode-hook (lambda () (set-buffer-process-coding-system 'mule-utf-8 'mule-utf-8)))
+
+;;; Smart quotes
+
+(require 'smart-quotes)
+(add-hook 'text-mode-hook (lambda () (turn-on-smart-quotes)))
+;;; html-mode-hook runs text-mode-hook, which is seems wrong, but this compensates for some of the lossage
+(add-hook 'html-mode-hook (lambda () (turn-off-smart-quotes))) 
+
+;;; ☒□ Org mode  □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+;;; Surely not really needed?
+;(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+(global-set-key "\M-`" 'other-window)	;Make M-` follow Mac convention, roughly 
+
+;;; autocomplete needs to work
+(add-hook 'org-mode-hook
+	  (lambda (&rest ignore)
+	    (outline-flag-region (point) (+ (point) 1) nil) ;opens subtree at point
+	    (define-key org-mode-map
+	      [(control return)] 'complete)))
+
+;;; export stopped working, this I am hoping fixes it.
+;(require 'org-loaddefs)
+
+;;; ☒□ File management  □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+;;; IDO mode, makes find file more autocompletey
+(require 'ido)
+(ido-mode t)
+
+(eval-after-load 'tramp
+ '(progn
+    ;; Allow to use: /sudo:user@host:/path/to/file
+    (add-to-list 'tramp-default-proxies-alist
+		  '(".*" "\\`.+\\'" "/ssh:%h:"))))
+
+
+(require 'saveplace) ; Saves and restores location within files
+(setq-default save-place t)
+
+;;; Show full pathnames in frame header
+(setq frame-title-format
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))
+
+;;; Put auto-save and backup files out of band 
+;;; https://ogbe.net/emacsconfig.html
+;;; Backup seems to only sometimes work, not sure why
+;;; Breaks recover session, argh
+;;; 12/5/2017 this was my old customization, I'm going to try more aggresive auto-save
+;; (defvar backup-dir (expand-file-name "~/.emacs.d/emacs_backup/"))
+;; (defvar autosave-dir (expand-file-name "~/.emacs.d/autosave/"))
+;; (setq backup-directory-alist (list (cons ".*" backup-dir)))
+;; (setq auto-save-list-file-prefix autosave-dir)
+;; (setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
+;; (setq tramp-backup-directory-alist backup-directory-alist)
+;; (setq tramp-auto-save-directory autosave-dir)
+
+
+;;; Backups – http://www.emacswiki.org/emacs/BackupDirectory
+;;; +++ Seems broken – moved to proper customization.
+;; (setq
+;;    backup-by-copying t      ; don't clobber symlinks
+;;    backup-directory-alist
+;;     '(("." . "~/.saves"))    ; don't litter my fs tree (something is smashing this var, it's now  ((".*" . "/var/folders/pg/y132_m3s05gdxrjggbt4_2280000gp/T/")))
+;;    delete-old-versions t
+;;    delete-by-moving-to-trash t
+;;    kept-new-versions 6
+;;    kept-old-versions 2
+;;    version-control t)  
+
+;; (setq backup-directory-alist
+;;       `((".*" . ,temporary-file-directory)))
+;; (setq auto-save-file-name-transforms
+;;       `((".*" ,temporary-file-directory t)))
+
+
+;;; ☒□ Clojure □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+(unless (package-installed-p 'cider)
+  (package-install 'cider))
+
+;;; NRepl
+(add-to-list 'same-window-buffer-names "*nrepl*") ; not sure
+
+
+;;; ☒□ Java  □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (setq c-basic-offset 4)
 (setq indent-tabs-mode nil)
@@ -214,166 +277,21 @@ mouse-3: Remove current window from display")))))))
              (make-local-variable 'write-contents-hooks)
              (add-hook 'write-contents-hooks 'java-mode-untabify)))
 
-;;; Misc language stuff
-
-;;; No, not there despite library installed, wtf
-;;; (require 'ttl-mode)
+;;; ☒□ Misc language support  □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
 (add-to-list 'auto-mode-alist '("\\.sparql$" . sparql-mode))
 (add-to-list 'auto-mode-alist '("\\.rq$" . sparql-mode))
 
-;;; Org mode
-
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-cc" 'org-capture)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
-
-;;; autocomplete needs to work
-(add-hook 'org-mode-hook
-	  (lambda (&rest ignore)
-	    (define-key org-mode-map
-	      [(control return)] 'complete)))
-
-	  
-;;; export stopped working, this I am hoping fixes it.
-(require 'org-loaddefs)
-
-;;; *** Useful hacks *************************** 
-
-;; Sometimes frame size gets stuck, this can fix it
-(defun set-current-frame-size (rows cols) "resize current frame to ROWS and COLUMNS"
-  (interactive "nrows: \nncolumns: ")
-  (let ((frame (car (cadr (current-frame-configuration)))))
-    (set-frame-size frame cols rows)))
-
-;;; *** Assorted trash *************************** 
-
-;(add-to-list 'load-path (expand-file-name "~/emacs/site/semantic"))
-;(add-to-list 'load-path (expand-file-name "~/emacs/site/speedbar"))
-;(add-to-list 'load-path (expand-file-name "~/emacs/site/elib"))
-
-;;; attempt to get rid of unreadable light green font color (not working)
-;;; not working here
-'(define-sldb-faces
-  (restartable-frame-line
-   "frames which are surely restartable"
-   '(:foreground "dark green")))
-
-(put 'set-goal-column 'disabled nil)
-
-;;; For slime-js (+++ experimental)
-;; This is broken and probably unneeded
-;; (autoload 'js2-mode "js2-mode" nil t)
-;; (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-;; (global-set-key [f5] 'slime-js-reload)
-;; (add-hook 'js2-mode-hook
-;;           (lambda ()
-;;             (slime-js-minor-mode 1)))
-
-;;; IDO mode, giving it a shakeout
-(require 'ido)
-(ido-mode t)
-
-;;; Textmate mode (also experimental)
-;; (add-to-list 'load-path "~/.emacs.d/vendor/textmate.el")
-;; (require 'textmate)
-;; (textmate-mode)
-;; (global-set-key (kbd "C-x C-g") 'textmate-goto-file)
-
-(prefer-coding-system 'utf-8)
-
-;; Solarize me!
-(when window-system
-  (add-to-list 'custom-theme-load-path "/misc/repos/emacs-color-theme-solarized/")
-  (load-theme 'solarized t)
-  (setq darkness nil))
-
-;;; ugly
-;;; Actually since it is inverted, these set the opposite *ground
-;(set-face-background 'mode-line "#00aacc")
-;(set-face-foreground 'mode-line "#444444")
-
-(defun invert-theme ()
-  (interactive)
-  (set-frame-parameter nil 'background-mode (if darkness 'light 'dark))
-  (enable-theme 'solarized)
-  (setf darkness (not darkness)))
-
-;;; Trial run 
-;;; (global-hl-line-mode -1)
 (require 'paren)
+
 (setq show-paren-style 'expression) ; looks good with non-bold show-paren-match face
 ;(setq show-paren-style 'parenthesis)
 (show-paren-mode 1)	
 (setq show-paren-delay 0.33)
 
-;;; Show full pathnames in frame header
-(setq frame-title-format
-      '((:eval (if (buffer-file-name)
-                   (abbreviate-file-name (buffer-file-name))
-                 "%b"))))
-
-;;; Dash is great (Mac only)
+;;; Dash is a documentation browser (Mac only)
 (global-set-key "\C-cd" 'dash-at-point)
 
-(define-minor-mode sensitive-mode
-  "For sensitive files like password lists.
-It disables backup creation and auto saving.
-
-With no argument, this command toggles the mode.
-Non-null prefix argument turns on the mode.
-Null prefix argument turns off the mode."
-  ;; The initial value.
-  nil
-  ;; The indicator for the mode line.
-  " Sensitive"
-  ;; The minor mode bindings.
-  nil
-  (if (symbol-value sensitive-mode)
-      (progn
-	;; disable backups
-	(set (make-local-variable 'backup-inhibited) t)	
-	;; disable auto-save
-	(if auto-save-default
-	    (auto-save-mode -1)))
-    ;resort to default value of backup-inhibited
-    (kill-local-variable 'backup-inhibited)
-    ;resort to default auto save setting
-    (if auto-save-default
-	(auto-save-mode 1))))
-
-(setq auto-mode-alist
- (append '(("\\.sensitive$" . sensitive-mode))
-	 auto-mode-alist))
-
-;;; Offer to create missing directories
-;;; Source: https://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/
-(defun maybe-create-non-existent-directory ()
-  (let ((parent-directory (file-name-directory buffer-file-name)))
-    (when (and (not (file-exists-p parent-directory))
-	       (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
-      (make-directory parent-directory t))))
-
-(add-to-list 'find-file-not-found-functions #'maybe-create-non-existent-directory)
-
-(require 'cl)
-
-(ecase system-type	      
-       (gnu/linux 
-	(require 'init-ubuntu))
-       (darwin
-	(require 'init-mac)))
-
-;;; Bell controls:
-(setq visible-bell nil)
-;;; Flash modeline instead of a beep
-(setq ring-bell-function (lambda ()
-			   (invert-face 'mode-line)
-			   (run-with-timer 0.1 nil 'invert-face 'mode-line)))
-
-
 (provide 'mt-init)
+

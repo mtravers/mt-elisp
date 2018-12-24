@@ -1,5 +1,7 @@
 ;;; -*- encoding : utf-8; lexical-binding: t -*-
 
+(require 'cl-lib)
+
 ;;; ◇⟐◈ Dired augmentation ◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐
 
 ;;; Launch files with 'l' 
@@ -10,12 +12,13 @@
   (interactive)
   (let* ((files (dired-get-marked-files t current-prefix-arg))
          (n (length files))
-	 (opener (ecase system-type	      
-		   (gnu/linux 
-		    (if (search "redhat" system-configuration)
+	 (opener (cond
+		  ((eq system-type 'gnu/linux)
+		   (if (search "redhat" system-configuration)
 			"gvfs-open"
-		      "xdg-open"))	;right for gnome (ubuntu), not necessarily for other systems
-		   (darwin "open"))))
+		     "xdg-open"))					;right for gnome (ubuntu), not necessarily for other systems
+		  ((eq system-type 'darwin)
+		   "open"))))
     (when (or (<= n 3)
               (y-or-n-p (format "Open %d files?" n)))
       (dolist (file files)
@@ -46,7 +49,7 @@ end tell")
 	      "r" 'dired-reveal-command)))
 
 (defun file-buffers ()
-  (remove-if-not #'buffer-file-name (buffer-list)))
+  (filter #'buffer-file-name (buffer-list)))
 
 ;;; see also http://www.emacswiki.org/emacs/SearchBuffers
 (defun search-all-buffers (arg string)
@@ -147,49 +150,6 @@ end tell")
      nil 'fullscreen
      (when (not (frame-parameter nil 'fullscreen)) 'fullboth)))
 
-;;; ??? What was this for?
-(defun yank-current-file-name ()
-  "Insert file name of current buffer.
-If repeated, insert text from buffer instead."
-  (interactive)
-  (if (buffer-file-name (current-buffer))
-      (kill-new (buffer-file-name (current-buffer)))
-    (beep)))
-	 
-;;; Relies on lexical-binding: t in mode line
-(defun applescript-apply (f script)
-  (require 'apples-mode)
-  (apples-do-applescript
-   script
-   #'(lambda (result status script)
-       ;; pull out part in quotes
-       (string-match "\"\\(.*\\)\"" result)
-       (let ((actual (match-string 1 result)))
-	 (funcall f actual)))))
-  
-(defun applescript-yank (script)
-  (applescript-apply #'insert script))
-
-(defconst applescript-get-chrome-url
-  "tell application \"Google Chrome\"
-	get URL of active tab of first window
-end tell"
-  )
-
-(defun yank-chrome-url ()
- "Yank current URL from Chrome"
-  (interactive)
-  (applescript-yank applescript-get-chrome-url))
-
-(defun yank-chrome-selection ()
- "Yank current selection from Chrome"
-  (interactive)
-  (applescript-yank "tell application \"Google Chrome\"
-	copy selection of active tab of first window
-end tell
-set theText to the clipboard" )
-  )
-
 ;;; Keyboard macros
 (defun call-kbd-macro (m) (let ((last-kbd-macro m)) (call-last-kbd-macro)))
 
@@ -231,7 +191,7 @@ set theText to the clipboard" )
   (interactive)
   (insert "🍩🍩🍩"))
 
-(defvar screenshot-directory "/Users/mt/Dropbox/Screenshots/")
+(defvar screenshot-directory "~/Desktop/")
 
 (defun org-include-image (directory file)
   (let* ((file-clean (replace-regexp-in-string "\s" "_" file))
@@ -239,11 +199,6 @@ set theText to the clipboard" )
     (copy-file (concat directory file)
 	       (concat current-directory file-clean))
     (insert (format "\nfile:%s\n" file-clean))))
-
-(defun yank-latest-screenshot ()
-  (interactive)
-  (org-include-image screenshot-directory
-   (first (last (directory-files screenshot-directory)))))
 
 ;;; TODO apply to DIRED? But can do by hand like:
 ;;; (dolist (f '( "Screen Shot 2018-06-20 at 8.54.30 PM.png" "Screen Shot 2018-06-20 at 9.00.40 PM.png"... )) (org-include-image  "/Users/mt/Dropbox/work-macbook/to-home/"  f))
@@ -258,14 +213,53 @@ set theText to the clipboard" )
   (goto-char (mark t))
   (insert before))
 
-;;; Idea_stupid: work in HTML mode as well
-(defun link-chrome ()
-  "Make an org-mode hyperlink from region to current chrome url"
-  (interactive)
-  (applescript-apply
-   #'(lambda (url)
-       (insert-around-region (concat "[[" url "][") "]]"))
-   applescript-get-chrome-url))
+
+;;; Offer to create missing directories
+;;; Source: https://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/
+(defun maybe-create-non-existent-directory ()
+  (let ((parent-directory (file-name-directory buffer-file-name)))
+    (when (and (not (file-exists-p parent-directory))
+	       (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
+      (make-directory parent-directory t))))
+
+(add-to-list 'find-file-not-found-functions #'maybe-create-non-existent-directory)
+
+;; Sometimes frame size gets stuck, this can fix it
+(defun set-current-frame-size (rows cols) "resize current frame to ROWS and COLUMNS"
+  (interactive "nrows: \nncolumns: ")
+  (let ((frame (car (cadr (current-frame-configuration)))))
+    (set-frame-size frame cols rows)))
+
+
+(define-minor-mode sensitive-mode
+  "For sensitive files like password lists.
+It disables backup creation and auto saving.
+
+With no argument, this command toggles the mode.
+Non-null prefix argument turns on the mode.
+Null prefix argument turns off the mode."
+  ;; The initial value.
+  nil
+  ;; The indicator for the mode line.
+  " Sensitive"
+  ;; The minor mode bindings.
+  nil
+  (if (symbol-value sensitive-mode)
+      (progn
+	;; disable backups
+	(set (make-local-variable 'backup-inhibited) t)	
+	;; disable auto-save
+	(if auto-save-default
+	    (auto-save-mode -1)))
+    ;resort to default value of backup-inhibited
+    (kill-local-variable 'backup-inhibited)
+    ;resort to default auto save setting
+    (if auto-save-default
+	(auto-save-mode 1))))
+
+(setq auto-mode-alist
+ (append '(("\\.sensitive$" . sensitive-mode))
+	 auto-mode-alist))
 
 (provide 'mt-el-hacks)
 

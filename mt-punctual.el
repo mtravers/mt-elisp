@@ -38,7 +38,7 @@
       (setq end (point))    
       (skip-syntax-backward "^ ")
       (setq start (point))
-      (setq str (upcase (buffer-substring-no-properties start end)))
+      (setq str (buffer-substring-no-properties start end))
       (setq def (assoc str punctuals))
       (if def
 	  (progn
