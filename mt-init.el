@@ -15,10 +15,16 @@
 ;;; necessary to get proper version of cider
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
+(setq load-prefer-newer t)
 
 (package-initialize)
 
-;;; TODO right way to compile these?
+;;; autocompile
+;;; Note: library has stupid rule that it will only REcompile
+(require 'auto-compile)
+(auto-compile-on-load-mode)
+(auto-compile-on-save-mode)
+
 (require 'mt-utils)
 (require 'mt-patches)
 ;(require 'mt-slime)

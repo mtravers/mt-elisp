@@ -1,10 +1,13 @@
+;;; -*- encoding : utf-8; lexical-binding: t -*-
+
 ;;; Mac-specific hacks, many relying on Applescript
 
+(require 'apples-mode)
+
 (defun applescript-apply (f script)
-  (require 'apples-mode)
   (apples-do-applescript
    script
-   #'(lambda (result status script)
+   #'(lambda (result _ _2)
        ;; pull out part in quotes
        (string-match "\"\\(.*\\)\"" result)
        (let ((actual (match-string 1 result)))

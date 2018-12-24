@@ -40,7 +40,7 @@
 end tell")
 
 (add-hook 'dired-load-hook
-	  (lambda (&rest ignore)
+	  (lambda (&rest _)
 	    (define-key dired-mode-map
 	      (kbd "C-c C-s") 'dired-toggle-sudo)
 	    (define-key dired-mode-map
@@ -68,7 +68,7 @@ end tell")
 (defun visit-region (start end)
   (interactive "r")
   (let* ((s (buffer-substring-no-properties start end))
-	 (ignore (string-match "\\([[:alnum:]@_/\\.-]+\\):\\([[:digit:]]*\\)" s))
+	 (_ (string-match "\\([[:alnum:]@_/\\.-]+\\):\\([[:digit:]]*\\)" s))
 	 (file (match-string 1 s))
 	 (line (string-to-number (match-string 2 s)))
 ;	 (buffer (find-file file))
@@ -76,6 +76,7 @@ end tell")
 ;note also we could skip find entirely, just find buffer and pass to goto-line
 	 (buffer (find-file-other-window file)) 
 	 )
+    ;; TODO this gets a warning, but the advice to use forward-line seems dumb
     (goto-line line buffer)))
 
 (define-key global-map
@@ -141,7 +142,7 @@ end tell")
   (insert "\n")
   (insert border)
   (insert "\n")
-  (previous-line))
+  (forward-line -1))
 
 (defun toggle-fullscreen ()
   "Toggle full screen"
@@ -179,7 +180,7 @@ end tell")
   (interactive)
   (while (search-forward "
 ⫸ " nil t)
-    (delete-backward-char 2)
+    (delete-char -2)
     (insert "#+BEGIN_QUOTE
 " )
     (end-of-line)
