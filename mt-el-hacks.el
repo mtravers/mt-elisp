@@ -86,7 +86,7 @@ end tell")
   (with-current-buffer buffer
     (let ((command (concat command "\n")))
       (goto-char (point-max))
-      (insert-string command)
+      (insert command)
       (comint-send-input))))
 
 ;;; Start a shell with a command.
