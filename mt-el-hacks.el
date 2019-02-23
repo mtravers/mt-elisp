@@ -48,8 +48,11 @@ end tell")
 	    (define-key dired-mode-map
 	      "r" 'dired-reveal-command)))
 
+;;; Filter went away!
+(require 'seq)
+
 (defun file-buffers ()
-  (filter #'buffer-file-name (buffer-list)))
+  (seq-filter #'buffer-file-name (buffer-list)))
 
 ;;; see also http://www.emacswiki.org/emacs/SearchBuffers
 (defun search-all-buffers (arg string)
