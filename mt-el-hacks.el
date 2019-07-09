@@ -195,14 +195,15 @@ end tell")
   (interactive)
   (insert "🍩🍩🍩"))
 
-(defvar screenshot-directory "~/Desktop/")
-
-(defun org-include-image (directory file)
-  (let* ((file-clean (replace-regexp-in-string "\s" "_" file))
+(defun org-include-image (file)
+  (let* ((pos (position 47 file :from-end t))
+	 (filename (substring f (+ pos 1)))
+	 (filename-clean (replace-regexp-in-string "\s" "_" filename))
 	 (current-directory default-directory))
-    (copy-file (concat directory file)
-	       (concat current-directory file-clean))
-    (insert (format "\nfile:%s\n" file-clean))))
+    (print (list :hey file current-directory filename-clean))
+    (copy-file file
+	       (concat current-directory filename-clean))
+    (insert (format "\nfile:%s\n" filename-clean))))
 
 ;;; TODO apply to DIRED? But can do by hand like:
 ;;; (dolist (f '( "Screen Shot 2018-06-20 at 8.54.30 PM.png" "Screen Shot 2018-06-20 at 9.00.40 PM.png"... )) (org-include-image  "/Users/mt/Dropbox/work-macbook/to-home/"  f))
@@ -265,6 +266,15 @@ Null prefix argument turns off the mode."
  (append '(("\\.sensitive$" . sensitive-mode))
 	 auto-mode-alist))
 
+;;; Like shell but picks more intelligent buffer names
+(defun schnell ()
+  (interactive)
+  (let ((dir (first (last (split-string-and-unquote default-directory "/")))))
+    (shell (generate-new-buffer-name (concat "*shell " dir "*") ))))
+
+
 (provide 'mt-el-hacks)
+
+
 
 

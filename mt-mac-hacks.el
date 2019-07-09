@@ -45,11 +45,21 @@ set theText to the clipboard" )
        (insert-around-region (concat "[[" url "][") "]]"))
    applescript-get-chrome-url))
 
+(defvar screenshot-directory "~/Desktop/")
+
+(defun file-modification-time (f)
+  (let ((attrs (file-attributes f))) (nth 5 attrs)))
+
+(defun latest-file (files)
+  (car (sort files (lambda (a b)
+		     (not (time-less-p (file-modification-time a)
+				       (file-modification-time b)))))))
+
+;; TODO bug, this doesn't always find the latest shot, order is off.
 (defun yank-latest-screenshot ()
   (interactive)
-  ;; How did this 
-  (org-include-image screenshot-directory
-		     (car (last (directory-files screenshot-directory nil "Screen Shot")))))
+  (org-include-image (latest-file (directory-files screenshot-directory t "Screen Shot"))))
+
 
 ;;; Idea_stupid: yank-latest-window-name (to label screenshots, among other uses). But need to have way to get at previous application.
 
