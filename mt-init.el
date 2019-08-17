@@ -196,6 +196,13 @@ mouse-3: Remove current window from display")))))))
 	    (define-key org-mode-map
 	      [(control return)] 'complete)))
 
+;;; Bind Meta-option-Y to formatted-yank, which preserves bolt/italic/links etc.
+(add-hook 'org-mode-hook
+	  (lambda (&rest ignore)
+	    (define-key org-mode-map
+	      ;; (meta option y), aka [134217893]
+	      (kbd "M-¥") 'formatted-yank)))
+
 ;;; export stopped working, this I am hoping fixes it.
 ;(require 'org-loaddefs)
 

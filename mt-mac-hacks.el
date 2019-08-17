@@ -12,6 +12,8 @@
        (string-match "\"\\(.*\\)\"" result)
        (let ((actual (match-string 1 result)))
 	 (funcall f actual)))))
+
+;;; TODO if starts with a {, its an applescript list. Parse it and turn it into lines for inserton probably. Maybe use reader? or (s-split "," result)
   
 (defun applescript-yank (script)
   (applescript-apply #'insert script))
@@ -22,10 +24,26 @@
 end tell"
   )
 
+(defconst applescript-get-chrome-window-urls
+  "tell application \"Google Chrome\"
+	get URL of tabs of first window
+end tell"
+  )
+
+(defconst applescript-get-chrome-all-urls
+  "tell application \"Google Chrome\"
+	get URL of tabs of windows
+end tell"
+  )
+
 (defun yank-chrome-url ()
  "Yank current URL from Chrome"
   (interactive)
-  (applescript-yank applescript-get-chrome-url))
+  (applescript-yank
+   (case (car current-prefix-arg)
+     (nil applescript-get-chrome-url)
+     (4 applescript-get-chrome-window-urls)
+     (16 applescript-get-chrome-all-urls))))
 
 (defun yank-chrome-selection ()
  "Yank current selection from Chrome"

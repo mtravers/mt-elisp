@@ -174,7 +174,7 @@ end tell")
 ;;; I'm getting lazy.
 
 (defun yank-quote ()
-  "Make an org-mode blockqupte from current browser selection as in yank-chrome-selection"
+  "Make an org-mode blockquote from current browser selection as in yank-chrome-selection"
   (call-kbd-macro
    [91 2 91 escape 120 121 97 110 107 45 99 104 114 32 117 32 return 24 24 6 67108896 134217730 134217730 91 5]))
 
@@ -197,7 +197,7 @@ end tell")
 
 (defun org-include-image (file)
   (let* ((pos (position 47 file :from-end t))
-	 (filename (substring f (+ pos 1)))
+	 (filename (substring file (+ pos 1)))
 	 (filename-clean (replace-regexp-in-string "\s" "_" filename))
 	 (current-directory default-directory))
     (print (list :hey file current-directory filename-clean))
@@ -266,11 +266,23 @@ Null prefix argument turns off the mode."
  (append '(("\\.sensitive$" . sensitive-mode))
 	 auto-mode-alist))
 
-;;; Like shell but picks more intelligent buffer names
+;;; Has a dependency on magit, but I expect to always have that loaded.
 (defun schnell ()
+  "Like shell but picks more intelligent buffer names based on current git repo name"
   (interactive)
-  (let ((dir (first (last (split-string-and-unquote default-directory "/")))))
+  (let ((dir (first (last (split-string-and-unquote (magit-toplevel default-directory) "/")))))
     (shell (generate-new-buffer-name (concat "*shell " dir "*") ))))
+
+;;; source: https://emacs.stackexchange.com/questions/12121/org-mode-parsing-rich-html-directly-when-pasting
+;;; Requires osascript (pre-installed on macs?) and pandoc (brew)
+;;; Pandoc introduces spurious _, haven't figured out how to fix that.
+(defun formatted-yank ()
+  "Convert clipboard contents from HTML to Org and then paste (yank)."
+  (interactive)
+  (kill-new (shell-command-to-string "osascript -e 'the clipboard as \"HTML\"' | perl -ne 'print chr foreach unpack(\"C*\",pack(\"H*\",substr($_,11,-3)))' | pandoc -f html -t org"))
+  (yank))
+
+
 
 
 (provide 'mt-el-hacks)

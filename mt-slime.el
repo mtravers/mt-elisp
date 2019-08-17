@@ -41,7 +41,7 @@
 	(acl-82 ("/Applications/AllegroCL64/alisp8")
 		)
 	(mcl ("/misc/reposed/ccl/dx86cl64")
-	     :env ("CCL_DEFAULT_DIRECTORY=/misc/repos/ccl"))
+	     :env ("CCL_DEFAULT_DIRECTORY=/misc/reposed/ccl"))
 	(sbcl ("sbcl"))
 	))
 
