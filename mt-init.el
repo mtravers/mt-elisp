@@ -269,7 +269,7 @@ mouse-3: Remove current window from display")))))))
 (add-to-list 'same-window-buffer-names "*nrepl*") ; not sure
 
 
-;;; ☒□ Java  □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+;;; ☒□ Java □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (setq c-basic-offset 4)
 (setq indent-tabs-mode nil)

@@ -8,15 +8,23 @@
   (apples-do-applescript
    script
    #'(lambda (result _ _2)
-       ;; pull out part in quotes
-       (string-match "\"\\(.*\\)\"" result)
-       (let ((actual (match-string 1 result)))
-	 (funcall f actual)))))
+       (funcall f result))))
 
-;;; TODO if starts with a {, its an applescript list. Parse it and turn it into lines for inserton probably. Maybe use reader? or (s-split "," result)
-  
+(defun parse-applescript (return-string)
+  (cond ((string-prefix-p "{" return-string)
+	 (mapcar #'parse-applescript (mapcar #'string-trim (split-string (string-trim return-string "[{}]" "[{}]") ","))))
+	((string-prefix-p "\"" return-string)
+	 (string-trim return-string "[ \"]*" "[ \"]*"))
+	(t
+	 return-string)))
+
 (defun applescript-yank (script)
-  (applescript-apply #'insert script))
+  (applescript-apply #'(lambda (x) (insert (parse-applescript x))) script))
+
+(defun applescript-yank-list (script)
+  (applescript-apply #'(lambda (x) (dolist (item (parse-applescript x)) (insert item) (insert "\n"))) script))
+
+;;; TODO something like this for Preview, returning file urls
 
 (defconst applescript-get-chrome-url
   "tell application \"Google Chrome\"
@@ -37,14 +45,14 @@ end tell"
   )
 
 (defun yank-chrome-url ()
- "Yank current URL from Chrome"
+  "Yank current URL from Chrome. C-u prefix yanks URLs from all tabs of current window, C-u C-u from all windows"
   (interactive)
-  (applescript-yank
    (case (car current-prefix-arg)
-     (nil applescript-get-chrome-url)
-     (4 applescript-get-chrome-window-urls)
-     (16 applescript-get-chrome-all-urls))))
+     (4 (applescript-yank-list applescript-get-chrome-window-urls))
+     (16 (applescript-yank-list applescript-get-chrome-all-urls))
+     (t (applescript-yank applescript-get-chrome-url))))
 
+;;; TODO fucks up quotes. Maybe just replace with formatted-yank which works better?
 (defun yank-chrome-selection ()
  "Yank current selection from Chrome"
   (interactive)
@@ -53,6 +61,14 @@ end tell"
 end tell
 set theText to the clipboard" )
   )
+
+;;; Doesn't work because applescript exec is asynchronous.
+;;; Fix by using CPS consistently maybe?
+;; (defun yank-chrome ()
+;;   (interactive)
+;;   (yank-chrome-selection)
+;;   (insert "")
+;;   (yank-chrome-url)))
 
 ;;; Idea_stupid: work in HTML mode as well
 (defun link-chrome ()

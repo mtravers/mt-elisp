@@ -200,7 +200,6 @@ end tell")
 	 (filename (substring file (+ pos 1)))
 	 (filename-clean (replace-regexp-in-string "\s" "_" filename))
 	 (current-directory default-directory))
-    (print (list :hey file current-directory filename-clean))
     (copy-file file
 	       (concat current-directory filename-clean))
     (insert (format "\nfile:%s\n" filename-clean))))
@@ -268,14 +267,17 @@ Null prefix argument turns off the mode."
 
 ;;; Has a dependency on magit, but I expect to always have that loaded.
 (defun schnell ()
-  "Like shell but picks more intelligent buffer names based on current git repo name"
+  "Like shell but picks more intelligent buffer names based on current git repo name, and starts at repo root"
   (interactive)
-  (let ((dir (first (last (split-string-and-unquote (magit-toplevel default-directory) "/")))))
-    (shell (generate-new-buffer-name (concat "*shell " dir "*") ))))
+  (let* ((default-directory (magit-toplevel default-directory))
+	 (name (first (last (split-string-and-unquote default-directory "/")))))
+    (shell (generate-new-buffer-name (concat "*shell " name "*") ))))
 
 ;;; source: https://emacs.stackexchange.com/questions/12121/org-mode-parsing-rich-html-directly-when-pasting
 ;;; Requires osascript (pre-installed on macs?) and pandoc (brew)
 ;;; Pandoc introduces spurious _, haven't figured out how to fix that.
+;;; TODO dies if selection contains image, generally could be less fragile
+;;; Here rather than mt-mac-hacks.el because it might work on other platforms.
 (defun formatted-yank ()
   "Convert clipboard contents from HTML to Org and then paste (yank)."
   (interactive)
@@ -283,7 +285,27 @@ Null prefix argument turns off the mode."
   (yank))
 
 
+;;; IBuffer for shells – add a last command column
 
+(define-ibuffer-column last (:name "Last")
+  (ignore-errors (ring-ref comint-input-ring 0)))
+
+;;; defcustom 
+(setq ibuffer-formats
+      '((mark modified read-only locked
+	      " " (name 18 18 :left :elide)
+	      " " (size 9 -1 :right)
+	      " " (mode 16 16 :left :elide) " " filename-and-process)
+	(mark " " (name 16 -1) " " filename)
+	;; Added
+	(mark " " (name 18 18) " " (filename 35 35 :left :elide) " " last)
+	)
+      )
+
+;;; TODO
+(defun shells ()
+  ;; open an ibuffer with proper filtering and format...not obvious how to do that
+  )
 
 (provide 'mt-el-hacks)
 
