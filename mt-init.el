@@ -27,7 +27,7 @@
 
 (require 'mt-utils)
 (require 'mt-patches)
-;(require 'mt-slime)
+(require 'mt-slime)
 (require 'mt-el-hacks)
 (require 'mt-mac-hacks)			;TODO conditionalize
 (require 'mt-punctual)

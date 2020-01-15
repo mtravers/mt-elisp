@@ -307,6 +307,68 @@ Null prefix argument turns off the mode."
   ;; open an ibuffer with proper filtering and format...not obvious how to do that
   )
 
+(defun sgrep-read-files (regexp)
+  "sgrep support: A simplified version of grep-read-files that always defaults to *"
+  (let* ((default "*")
+	 (files (completing-read
+		 (concat "Search for \"" regexp
+			 "\" in files matching wildcard"
+			 (if default (concat " (default " default ")"))
+			 ": ")
+		 'read-file-name-internal
+		 nil nil nil 'grep-files-history "*")))
+    (and files
+	 (or (cdr (assoc files grep-files-aliases))
+	     files))))
+
+(defun sgrep (regexp &optional files dir confirm)
+  "rgrep except it defaults to:
+- (1) searching all files
+- (2) searching from repo root dir (TODO or perhaps root/src as an option)"
+  (interactive
+   (progn
+     (grep-compute-defaults)
+     (cond
+      ((and grep-find-command (equal current-prefix-arg '(16)))
+       (list (read-from-minibuffer "Run: " grep-find-command
+				   nil nil 'grep-find-history)))
+      ((not grep-find-template)
+       (error "grep.el: No `grep-find-template' available"))
+      (t (let* ((regexp (grep-read-regexp))
+		(files (sgrep-read-files regexp))		       ;(1)
+		(default-directory (magit-toplevel default-directory)) ;(2)
+		(dir (read-directory-name "Base directory: "
+					  nil default-directory t))
+		(confirm (equal current-prefix-arg '(4))))
+	   (list regexp files dir confirm))))))
+  (when (and (stringp regexp) (> (length regexp) 0))
+    (unless (and dir (file-accessible-directory-p dir))
+      (setq dir default-directory))
+    (if (null files)
+	(if (not (string= regexp (if (consp grep-find-command)
+				     (car grep-find-command)
+				   grep-find-command)))
+	    (compilation-start regexp 'grep-mode))
+      (setq dir (file-name-as-directory (expand-file-name dir)))
+      (let ((command (rgrep-default-command regexp files nil)))
+	(when command
+	  (if confirm
+	      (setq command
+		    (read-from-minibuffer "Confirm: "
+					  command nil nil 'grep-find-history))
+	    (add-to-history 'grep-find-history command))
+          (grep--save-buffers)
+	  (let ((default-directory dir))
+	    (compilation-start command 'grep-mode))
+	  ;; Set default-directory if we started rgrep in the *grep* buffer.
+	  (if (eq next-error-last-buffer (current-buffer))
+	      (setq default-directory dir)))))))
+
+
+
+
+
+
 (provide 'mt-el-hacks)
 
 
