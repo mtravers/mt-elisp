@@ -8,7 +8,7 @@
   (apples-do-applescript
    script
    #'(lambda (result _ _2)
-       (funcall f result))))
+       (funcall f (parse-applescript result)))))
 
 (defun parse-applescript (return-string)
   (cond ((string-prefix-p "{" return-string)
@@ -19,10 +19,10 @@
 	 return-string)))
 
 (defun applescript-yank (script)
-  (applescript-apply #'(lambda (x) (insert (parse-applescript x))) script))
+  (applescript-apply #'(lambda (x) (insert x)) script))
 
 (defun applescript-yank-list (script)
-  (applescript-apply #'(lambda (x) (dolist (item (parse-applescript x)) (insert item) (insert "\n"))) script))
+  (applescript-apply #'(lambda (x) (dolist (item x) (insert item) (insert "\n"))) script))
 
 ;;; TODO something like this for Preview, returning file urls
 
@@ -71,6 +71,7 @@ set theText to the clipboard" )
 ;;   (yank-chrome-url)))
 
 ;;; Idea_stupid: work in HTML mode as well
+;;; TODO Bug: works if point is at end of selection, if at the start it fucks up. See comment at insert-around-region
 (defun link-chrome ()
   "Make an org-mode hyperlink from region to current chrome url"
   (interactive)
