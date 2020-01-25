@@ -71,13 +71,13 @@ set theText to the clipboard" )
 ;;   (yank-chrome-url)))
 
 ;;; Idea_stupid: work in HTML mode as well
-;;; TODO Bug: works if point is at end of selection, if at the start it fucks up. See comment at insert-around-region
 (defun link-chrome ()
   "Make an org-mode hyperlink from region to current chrome url"
   (interactive)
   (applescript-apply
    #'(lambda (url)
-       (insert-around-region (concat "[[" url "][") "]]"))
+       (insert-around-region (concat "[[" url "][") "]]")
+       (message "Linked %s" url))
    applescript-get-chrome-url))
 
 (defvar screenshot-directory "~/Desktop/")

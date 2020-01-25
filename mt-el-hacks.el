@@ -208,15 +208,14 @@ end tell")
 ;;; (dolist (f '( "Screen Shot 2018-06-20 at 8.54.30 PM.png" "Screen Shot 2018-06-20 at 9.00.40 PM.png"... )) (org-include-image  "/Users/mt/Dropbox/work-macbook/to-home/"  f))
 
 ;;; org-mode link from region to topmost chrome page
-;;; TODO should print and confirm link probably
-
-;;; not right yet, what if point/mark are inverted?
-;;; TODO should restore point
 (defun insert-around-region (before after)
-  (insert after)
-  (goto-char (mark t))
-  (insert before))
-
+  (let ((start (min (mark t) (point)))
+	(end (max (mark t) (point))))
+    (save-excursion
+      (goto-char end)
+      (insert after)
+      (goto-char start)
+      (insert before))))
 
 ;;; Offer to create missing directories
 ;;; Source: https://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/
