@@ -19,7 +19,6 @@
 
 ;;; TODO: some way to turn this on only for projectst that use this convention
 
-
 ;;; ⟥⟤⟥ Autocomplete ⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤⟥⟤
 
 ;;; Not really working
@@ -52,3 +51,12 @@
 
 ;;; https://github.com/bhauman/lein-figwheel/wiki/Using-the-Figwheel-REPL-within-NRepl
 ;;; cider-cljs-lein-repl set in customizations – doesn't work here.
+
+;;; https://stackoverflow.com/questions/18304271/how-do-i-choose-switch-leiningen-profiles-with-emacs-nrepl
+(defun start-cider-repl-with-profile ()
+  (interactive)
+  (letrec ((profile (read-string "Enter profile name: "))
+           (lein-params (concat "with-profile +" profile " repl :headless")))
+    (message "lein-params set to: %s" lein-params)
+    (set-variable 'cider-lein-parameters lein-params)
+    (cider-jack-in '())))

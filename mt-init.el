@@ -1,29 +1,52 @@
 ; -*- mode: emacs-lisp -*-
 
+;;; TODO Clojure comments should begin "; " instead of ";"
+;;; TODO Magit or Magit TODO extension for debugging stmts "(prn :"
+
 ;;; ☒□ Packages □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
+;; (require 'package)
+;; (add-to-list 'package-archives
+;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+
 (defvar mt-elisp-directory (file-name-directory load-file-name))
+(use-package forge)			;required by magit
+;;; ☒□ Magit □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-(require 'package)
+;;; TODO investigate why commits in Rawsugar are so slow
+(use-package magit)
 
-(add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/"))
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(use-package magit-todos)
+(magit-todos-mode)
 
-;;; necessary to get proper version of cider
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
+;;; Customizations for reference. Note other kinds of project structure
+;;; are likely to require changes to magit-todos-exclude-globs, otherwise
+;;; it picks up crap (it's supposed to only pick up tracked files but
+;;; that is broken apparently).
+
+ ;; '(magit-git-executable "/usr/local/bin/git")
+ ;; '(magit-todos-branch-list t)
+ ;; '(magit-todos-exclude-globs (quote ("/resources/*")))
+ ;; '(magit-todos-keyword-suffix ":?")
+ ;; '(magit-todos-scanner (quote magit-todos--scan-with-rg))
+
+ ;; TODO would be nice if this was settable per-project but that looks hard
+ ;; for custom keywords
+;;  '(magit-todos-keywords (quote ("TODO" "HHH")))
+;; (custom-set-variables  '(magit-todos-keywords (quote ("TODO" "TEMP" "HHH" "OBSO"))))
+
+;;; ☒□ Clojure □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+(use-package cider
+  :ensure t)
+
 (setq load-prefer-newer t)
-
-(package-initialize)
 
 ;;; autocompile
 ;;; Note: library has stupid rule that it will only REcompile
-(require 'auto-compile)
-(auto-compile-on-load-mode)
-(auto-compile-on-save-mode)
+;; (require 'auto-compile)
+;; (auto-compile-on-load-mode)
+;; (auto-compile-on-save-mode)
 
 (require 'mt-utils)
 (require 'mt-patches)
@@ -40,7 +63,6 @@
        (require 'init-mac)))
 
 ;;; ☒□ Customizations □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
-
 
 ;;; Enable alt-control-arrowkeys for moving between panes
 ;;; Should work but doesn't
@@ -157,8 +179,8 @@ mouse-3: Remove current window from display")))))))
   (enable-theme 'solarized)
   (setf darkness (not darkness)))
 
-
 ;;; ☒□ Fonts and Unicode □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
 (prefer-coding-system 'utf-8)
 
 ;;; Nicer fonts
@@ -173,15 +195,13 @@ mouse-3: Remove current window from display")))))))
 
 ;;; Smart quotes
 
-(require 'smart-quotes)
-(add-hook 'text-mode-hook (lambda () (turn-on-smart-quotes)))
-;;; html-mode-hook runs text-mode-hook, which is seems wrong, but this compensates for some of the lossage
-(add-hook 'html-mode-hook (lambda () (turn-off-smart-quotes))) 
+;;; These are more trouble then they are worth, so turned off
+;; (require 'smart-quotes)
+;; (add-hook 'text-mode-hook (lambda () (turn-on-smart-quotes)))
+;;  ;;; html-mode-hook runs text-mode-hook, which is seems wrong, but this compensates for some of the lossage
+;; (add-hook 'html-mode-hook (lambda () (turn-off-smart-quotes))))
 
-;;; ☒□ Org mode  □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
-
-;;; Surely not really needed?
-;(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+;;; ☒□ Org mode □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cc" 'org-capture)
@@ -260,13 +280,6 @@ mouse-3: Remove current window from display")))))))
 ;;       `((".*" ,temporary-file-directory t)))
 
 
-;;; ☒□ Clojure □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
-
-(unless (package-installed-p 'cider)
-  (package-install 'cider))
-
-;;; NRepl
-(add-to-list 'same-window-buffer-names "*nrepl*") ; not sure
 
 
 ;;; ☒□ Java □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒

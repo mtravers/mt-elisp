@@ -1,26 +1,123 @@
 ; -*- mode: emacs-lisp -*-
+
+;;; Symlink ~/.emacs here. TODO much of this should go into mt-init.el 
+
+;;; Going Straight
+
+(defvar bootstrap-version)
+
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t)
+
+(use-package org)
+(use-package ox-reveal)
+
+
+;;; Note: there doesn't seem to be a way to update other than to go to the repo dir
+;;; ~/.emacs.d/straight/repos/org-roam
+;;; and doing a pull.
+(use-package org-roam
+      :after org
+;;; this adds org-roam-mode to all buffers? Not what I want
+;      :hook 
+;      (after-init . org-roam-mode)
+      :straight (:host github :repo "jethrokuan/org-roam" :branch "develop")
+      :custom
+      (org-roam-directory "/misc/working/org-roam/files")
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-show-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert)))
+      )
+
+;;; Blows out because fn is not defined yet
+;;; Noticing that ALL my add-hooks are commented out...I must not understand how this actually works.
+;(add-hook 'after-init-hook 'org-roam--build-cache-async)
+
+(use-package deft
+  :after org
+  :bind
+  ("C-c n d" . deft)
+  :custom
+  (deft-recursive t)
+  (deft-use-filter-string-for-filename t)
+  (deft-default-extension "org")
+  (deft-directory "/misc/working/org-roam/files"))
+
 (add-to-list 'load-path (expand-file-name "/misc/repos/mt-elisp"))
+
 (require 'mt-init)
+
+(use-package exec-path-from-shell)
+
+;;; https://github.com/purcell/exec-path-from-shell
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+;;; Makes ctrl-alt → move to next-right pane, etc.
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(backup-directory-alist (quote ((".*" . "~/.saves") ("" . ""))))
+ '(cider-cljs-lein-repl
+   "(do (require 'figwheel-sidecar.repl-api) (figwheel-sidecar.repl-api/start-figwheel!) (figwheel-sidecar.repl-api/cljs-repl))")
  '(cider-lein-command "/usr/local/bin/lein")
+ '(cider-prompt-for-symbol nil)
+ '(cider-repl-history-file "~/.emacs.d/cider-repl-history")
+ '(cider-repl-use-pretty-printing t)
+ '(clojure-defun-indents
+   (quote
+    (init-state render render-state will-mount should-update will-receive-props will-update did-update will-unmount)))
+ '(comint-process-echoes t)
+ '(custom-enabled-themes (quote (zenburn)))
+ '(custom-safe-themes
+   (quote
+    ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
+ '(deft-default-extension "org" t)
+ '(deft-directory "/misc/working/org-roam/files")
+ '(deft-recursive t)
+ '(deft-use-filter-string-for-filename t)
+ '(delete-old-versions t)
  '(describe-char-unidata-list
    (quote
     (name old-name general-category decomposition numeric-value iso-10646-comment)))
+ '(desktop-save-mode t)
+ '(dired-kept-versions 3)
+ '(display-line-numbers nil)
  '(electric-pair-mode t)
+ '(electric-pair-skip-self t)
  '(exec-path
    (quote
     ("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin" nil "/usr/local/bin")))
+ '(file-precious-flag t)
  '(fill-column 100)
+ '(git-commit-summary-max-length 120)
  '(global-auto-revert-ignore-modes (quote (archive-mode)))
  '(global-auto-revert-mode t)
+ '(global-display-line-numbers-mode nil)
  '(grep-find-ignored-directories
    (quote
     ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "logs" "log")))
+ '(grep-save-buffers nil)
  '(ibuffer-formats
    (quote
     ((mark modified read-only " "
@@ -34,7 +131,15 @@
 	   (name 16 -1)
 	   " " filename))))
  '(ido-show-dot-for-dired t)
+ '(kept-new-versions 3)
  '(line-move-visual t)
+ '(magit-git-executable "/usr/local/bin/git")
+ '(magit-todos-branch-list t)
+ '(magit-todos-exclude-globs (quote ("/resources/*")))
+ '(magit-todos-keyword-suffix ":?")
+ '(magit-todos-scanner (quote magit-todos--scan-with-rg))
+ '(magit-todos-keywords (quote ("TODO" "TEMP" "HHH" "OBSO")))
+
  '(markdown-command "/usr/local/bin/markdown")
  '(mode-line-format
    (quote
@@ -50,7 +155,7 @@ mouse-3: Remove current window from display"))
 	  (help-echo "mouse-1: Select (drag to resize)
 mouse-2: Make current window occupy the whole fr ame
 mouse-3: Remove current window from display"))))
-     mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification
+     mode-line-mule-info mode-line-client mode-line-modified mode-line-auto-compile mode-line-remote mode-line-frame-identification mode-line-buffer-identification
      #("   " 0 3
        (help-echo "mouse-1: Select (drag to resize)
 mouse-2: Make current window occupy the whole frame
@@ -89,60 +194,91 @@ mouse-3: Remove current window from display"))))
 	  (help-echo "mouse-1: Select (drag to resize)
 mouse-2: Make current window occupy the whole frame
 mouse-3: Remove current window from display")))))))
+ '(nrepl-sync-request-timeout 30)
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote meta))
  '(org-export-html-style
    "<style type=\"text/css\">
-  html { font-family: DejaVu Sans; font-size: 12pt; }
-  .title  { text-align: center; }
-  .todo   { color: red; }
-  .done   { color: green; }
-  .tag    { background-color: #add8e6; font-weight:normal }
-  .target { }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
-  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
-  .center {margin-left:auto; margin-right:auto; text-align:center;}
-  p.verse { margin-left: 3% }
-  pre {
-	border: 1pt solid #AEBDCC;
-	background-color: #F3F5F7;
-	padding: 5pt;
-	font-family: courier, monospace;
-        font-size: 90%;
-        overflow:auto;
-  }
-  table { border-collapse: collapse; }
-  td, th { vertical-align: top;  }
-  th.right  { text-align:center;  }
-  th.left   { text-align:center;   }
-  th.center { text-align:center; }
-  td.right  { text-align:right;  }
-  td.left   { text-align:left;   }
-  td.center { text-align:center; }
-  dt { font-weight: bold; }
-  div.figure { padding: 0.5em; }
-  div.figure p { text-align: center; }
-  div.inlinetask {
-    padding:10px;
-    border:2px solid gray;
-    margin:10px;
-    background: #ffffcc;
-  }
-  textarea { overflow-x: auto; }
-  .linenr { font-size:smaller }
-  .code-highlighted {background-color:#ffff00;}
+html { font-family: DejaVu Sans; font-size: 12pt; }
+.title  { text-align: center; }
+.todo   { color: red; }
+.done   { color: green; }
+.tag    { background-color: #add8e6; font-weight:normal }
+.target { }
+.timestamp { color: #bebebe; }
+.timestamp-kwd { color: #5f9ea0; }
+.right  {margin-left:auto; margin-right:0px;  text-align:right;}
+.left   {margin-left:0px;  margin-right:auto; text-align:left;}
+.center {margin-left:auto; margin-right:auto; text-align:center;}
+p.verse { margin-left: 3% }
+pre {
+border: 1pt solid #AEBDCC;
+background-color: #F3F5F7;
+padding: 5pt;
+font-family: courier, monospace;
+font-size: 90%;
+overflow:auto;
+}
+table { border-collapse: collapse; }
+td, th { vertical-align: top;  }
+th.right  { text-align:center;  }
+th.left   { text-align:center;   }
+th.center { text-align:center; }
+td.right  { text-align:right;  }
+td.left   { text-align:left;   }
+td.center { text-align:center; }
+dt { font-weight: bold; }
+div.figure { padding: 0.5em; }
+div.figure p { text-align: center; }
+div.inlinetask {
+padding:10px;
+border:2px solid gray;
+margin:10px;
+background: #ffffcc;
+}
+textarea { overflow-x: auto; }
+.linenr { font-size:smaller }
+.code-highlighted {background-color:#ffff00;}
 </style>")
  '(org-export-html-style-include-default nil)
  '(org-export-preserve-breaks t)
  '(org-modules
    (quote
     (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-special-blocks)))
- '(pivotal-api-token "23180f685c9c451bdd29c10eb35575be")
+ '(org-roam-directory "/misc/working/org-roam/files")
+ '(org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox")
+ '(org-timer-default-timer "5")
+ '(package-selected-packages
+   (quote
+    (google-translate flyparens flylisp forge deft grip-mode emojify nov yo-moma exec-path-from-shell ess rainbow-blocks pdf-tools magit eyebrowse frames-only-mode slime cider yaml-mode workgroups2 w3m unicode-fonts twittering-mode ttl-mode sparql-mode smart-mode-line scala-mode2 save-visited-files rspec-mode rainbow-delimiters pivotal-tracker pig-mode markdown-mode link less-css-mode json-mode js2-mode htmlize helm-open-github helm-itunes groovy-mode gradle-mode fringe-helper eruby-mode dired-toggle-sudo dash-at-point connection color-theme cider-decompile bpe apples-mode ample-theme ack ac-nrepl ac-cider 2048-game)))
  '(safe-local-variable-values
    (quote
-    ((package . net\.html\.generator)
+    ((Package . GEOMETRY)
+     (cider-default-cljs-repl quote figwheel-main)
+     (elisp-lint-indent-specs
+      (if-let* . 2)
+      (when-let* . 1)
+      (let* . defun)
+      (nrepl-dbind-response . 2)
+      (cider-save-marker . 1)
+      (cider-propertize-region . 1)
+      (cider-map-repls . 1)
+      (cider--jack-in . 1)
+      (cider--make-result-overlay . 1)
+      (insert-label . defun)
+      (insert-align-label . defun)
+      (insert-rect . defun)
+      (cl-defun . 2)
+      (with-parsed-tramp-file-name . 2)
+      (thread-first . 1)
+      (thread-last . 1))
+     (checkdoc-package-keywords-flag)
+     (magit-todos-exclude-globs "alzabo/pret/*")
+     (Package . biolisp)
+     (Package . ODD-STREAMS)
+     (package . net\.aserve\.test)
+     (bug-reference-bug-regexp . "#\\(?2:[[:digit:]]+\\)")
+     (package . net\.html\.generator)
      (package . net\.aserve\.client)
      (eval define-clojure-indent
 	   (phase-context 2)
@@ -186,16 +322,88 @@ mouse-3: Remove current window from display")))))))
      (encoding . utf-8))))
  '(send-mail-function (quote smtpmail-send-it))
  '(sentence-end-double-space nil)
+ '(size-indication-mode t)
  '(smtpmail-smtp-server "smtp.gmail.com")
  '(smtpmail-smtp-service 587)
  '(tramp-default-method "scpx")
- '(vc-hg-program "/usr/local/bin/hg"))
+ '(vc-follow-symlinks t)
+ '(vc-hg-program "/usr/local/bin/hg")
+ '(version-control t))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(font-lock-comment-face ((t (:foreground "knobColor" :inverse-video nil :underline nil :slant normal :weight normal))))
- '(show-paren-match ((t (:background "#e9e2cb" :foreground "#259185" :inverse-video nil :underline nil :slant normal :weight normal))))
+ '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 160 :width normal :foundry "nil" :family "Menlo"))))
+ '(fixed-pitch ((t (:family "Dejavu Sans Mono"))))
  '(variable-pitch ((t (:height 1.2 :width normal :family "Gill Sans")))))
+
+
+(defun link-region-2
+    (&optional arg)
+  (interactive "p")
+  (or arg
+      (setq arg 1))
+  (dotimes
+      (i arg)
+    (call-kbd-macro
+     [24 24 91 2 91 escape 120 121 97 110 107 45 99 104 114 117 109 backspace backspace 111 109 101 45 117 114 108 return 24 24 24 24 6 134217730 67108896 134217734 134217734 91 134217734 134217734 134217734])))
+(defun link-selection-3
+    (&optional arg)
+  (interactive "p")
+  (or arg
+      (setq arg 1))
+  (dotimes
+      (i arg)
+    (call-kbd-macro
+     [24 24 91 2 91 escape 120 121 97 110 107 45 99 104 114 111 109 101 45 117 114 108 return 6 134217730 91 4 134217734 134217734 93])))
+
+(defun blockquotify
+    (&optional arg)
+  (interactive "p")
+  (or arg
+      (setq arg 1))
+  (dotimes
+      (i arg)
+    (call-kbd-macro
+     [134217848 115 101 97 114 99 104 32 102 111 32 return 62 62 62 32 backspace return 6 backspace backspace 60 98 108 111 99 107 113 117 111 101 backspace 116 101 62 5 60 47 98 108 111 99 107 113 117 111 116 101 62])))
+
+;;; API keys etc 
+(require 'mt-secrets)
+
+;;; For Rawsugar
+
+(defun start-datomic ()
+  (interactive)
+  (startup-shell "*datomic-transactor*" "." "~/Downloads/datomic-pro-0.9.5951/bin/transactor /misc/repos/pici/rawsugar/credentials/dev-transactor.properties")
+  (startup-shell "*datomic-peer*" "." "~/Downloads/datomic-pro-0.9.5951/bin/run -m datomic.peer-server -h localhost -p 8998 -a myaccesskey,mysecret -d rawsugar-test,datomic:dev://localhost:4334/rawsugar-test"))
+
+
+;;; Let's try clj-refactor. No lets not
+
+;(require 'clj-refactor)
+
+'(defun my-clojure-mode-hook ()
+  (clj-refactor-mode 1)
+  (yas-minor-mode 1) ; for adding require/use/import statements
+  ;; This choice of keybinding leaves cider-macroexpand-1 unbound
+  (cljr-add-keybindings-with-prefix "C-c C-m"))
+
+;;; Was causing problems, turn this on a bit at a time.
+;(add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
+
+(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+
+;;; Definitely don't want this in code/shell, and probably don't want it at all. 
+;(add-hook 'after-init-hook #'global-emojify-mode)
+
+(add-to-list 'auto-mode-alist '("\\.ino" . c-mode)) ;Arduino
+
+(with-eval-after-load 'magit
+  (require 'forge))
+
+
+     
+
+

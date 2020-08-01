@@ -2,7 +2,7 @@
 
 ;;; Mac-specific hacks, many relying on Applescript
 
-(require 'apples-mode)
+(use-package apples-mode)
 
 (defun applescript-apply (f script)
   (apples-do-applescript
@@ -25,6 +25,8 @@
   (applescript-apply #'(lambda (x) (dolist (item x) (insert item) (insert "\n"))) script))
 
 ;;; TODO something like this for Preview, returning file urls
+
+;;; TODO generalize below so can work with Brave, other browsers
 
 (defconst applescript-get-chrome-url
   "tell application \"Google Chrome\"
@@ -59,7 +61,7 @@ end tell"
   (applescript-yank "tell application \"Google Chrome\"
 	copy selection of active tab of first window
 end tell
-set theText to the clipboard" )
+Set theText to the clipboard" )
   )
 
 ;;; Doesn't work because applescript exec is asynchronous.
@@ -70,14 +72,20 @@ set theText to the clipboard" )
 ;;   (insert "")
 ;;   (yank-chrome-url)))
 
+;;; TODO not mac specific
+;;; TODO surely there is an existing command to do this? Yes, org-insert-link
+(defun link (url)
+  "Make an org-mode hyperlink from region"
+  (interactive "surl: ")
+  (insert-around-region (concat "[[" url "][") "]]")
+  (message "Linked %s" url))
+
 ;;; Idea_stupid: work in HTML mode as well
+;;; TODO this leaves pointer in shitty place
 (defun link-chrome ()
   "Make an org-mode hyperlink from region to current chrome url"
   (interactive)
-  (applescript-apply
-   #'(lambda (url)
-       (insert-around-region (concat "[[" url "][") "]]")
-       (message "Linked %s" url))
+  (applescript-apply #'link
    applescript-get-chrome-url))
 
 (defvar screenshot-directory "~/Desktop/")
@@ -95,7 +103,19 @@ set theText to the clipboard" )
   (interactive)
   (org-include-image (latest-file (directory-files screenshot-directory t "Screen Shot"))))
 
-
 ;;; Idea_stupid: yank-latest-window-name (to label screenshots, among other uses). But need to have way to get at previous application.
+
+;;; TODO: yank-keep, gets latest note from keep.
+;;; No idea how to actually do that, probably involves implementing a client for Google API, which sounds like a pain. 
+
+;;; Close! Probably should copy browser selection to clipboard
+(defun transclude-chrome ()
+  (interactive)
+  (yank-chrome-url)			;at the beginning outside BLOCKQOUTE? Can always be moved
+  (insert "\n#+BEGIN_BLOCKQUOTE\n")
+  (formatted-yank)
+  ;alt (yank-chrome-selection)		;except should preserve italics etc (Formatted-yank) but that has its own problems
+  (insert "\n#+END_BLOCKQUOTE\n")
+  )
 
 (provide 'mt-mac-hacks)

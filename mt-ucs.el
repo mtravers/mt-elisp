@@ -4,6 +4,17 @@
 ;;; ucs-char-insert-all-inversions
 ;;; utf-fixer
 
+;;; M-x describe-char takes up half the screen,
+;;; I want something simpler (just the char name)
+;;; TODO – how about a mode where it just displays it, when it's a nonstandard char?
+;;; M-x describe-char has elaborate logic that should be pulled out...
+
+(defun desc-char (pos)
+  (interactive "d")
+  (let* ((char (char-after pos))
+	 (name (get-char-code-property char 'name)))
+    (prin1 name)))
+
 (defun ucs-insert-matching (pattern &optional word?)
   "Insert Unicode chars whose name matches PATTERN. A prefix arg means verbose (each char is on its own line with name)"
   (interactive "sPattern:")

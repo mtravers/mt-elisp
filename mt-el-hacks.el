@@ -39,7 +39,7 @@
 	open POSIX file \"<fnam>\"
 end tell")
 
-(add-hook 'dired-load-hook
+(add-hook 'dired-mode-hook
 	  (lambda (&rest _)
 	    (define-key dired-mode-map
 	      (kbd "C-c C-s") 'dired-toggle-sudo)
@@ -126,6 +126,8 @@ end tell")
   (interactive)
   (insert *last-decoration*))
 
+;;; TODO doesn't actually work, and not very necessary. Fix or delete.
+;;; Might assume start < end and that might not always be the case
 (defun insert-decorative-frame (start end)
   (interactive "r")
   (insert-decorative-frame-1 (random-decoration) start end))
@@ -266,17 +268,20 @@ Null prefix argument turns off the mode."
 
 ;;; Has a dependency on magit, but I expect to always have that loaded.
 (defun schnell ()
-  "Like shell but picks more intelligent buffer names based on current git repo name, and starts at repo root"
+  "Like shell but picks more intelligent buffer names, knows about git repos and will use toplevel if available"
   (interactive)
-  (let* ((default-directory (magit-toplevel default-directory))
+  (let* ((default-directory (or (magit-toplevel default-directory)
+				default-directory))
 	 (name (first (last (split-string-and-unquote default-directory "/")))))
     (shell (generate-new-buffer-name (concat "*shell " name "*") ))))
 
 ;;; source: https://emacs.stackexchange.com/questions/12121/org-mode-parsing-rich-html-directly-when-pasting
 ;;; Requires osascript (pre-installed on macs?) and pandoc (brew)
-;;; Pandoc introduces spurious _, haven't figured out how to fix that.
-;;; TODO dies if selection contains image, generally could be less fragile
 ;;; Here rather than mt-mac-hacks.el because it might work on other platforms.
+
+;;; TODO Pandoc introduces spurious _, haven't figured out how to fix that.
+;;; TODO dies if selection contains image, generally could be less fragile
+;;; TODO version of this that takes input from buffers/regions
 (defun formatted-yank ()
   "Convert clipboard contents from HTML to Org and then paste (yank)."
   (interactive)
@@ -363,9 +368,39 @@ Null prefix argument turns off the mode."
 	  (if (eq next-error-last-buffer (current-buffer))
 	      (setq default-directory dir)))))))
 
+(defun replace-all (from to)
+  (save-excursion
+    (mark-whole-buffer)			;this gets a compiler warning, but save-excursion should make it ok?
+    (while (search-forward from nil t)
+      (replace-match to nil t))))
+
+;;; Convert HTML blockquotes to org equivalent.
+;;; See formatted-yank above for a more general approach
+(defun html-to-org ()
+  (interactive)
+  (replace-all "<blockquote>" "
+#+BEGIN_QUOTE
+")
+  (replace-all "<\/blockquote>" "
+#+END_QUOTE
+"))
 
 
 
+;;; Return a tree of package dependencies 
+;;; (note: don't even use the package system any more, these are useless)
+
+(defun package-dependencies-one (name)
+  (let ((package (assoc name package-alist)))
+    (when package (mapcar #'car (package-desc-reqs (second package))))))
+
+(defun package-dependencies (name)
+  (cons name
+	(mapcar #'package-dependencies (package-dependencies-one name))))
+
+(defun all-package-dependencies ()
+  (mapcar #'package-dependencies
+	  (mapcar #'car package-alist)))
 
 
 (provide 'mt-el-hacks)
