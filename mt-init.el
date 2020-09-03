@@ -10,14 +10,25 @@
 ;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
 (defvar mt-elisp-directory (file-name-directory load-file-name))
-(use-package forge)			;required by magit
+
+;;; ☒□ Projectile □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+
+;;; Added 8/13/2020, stille exploring!
+;;; https://github.com/bbatsov/projectile
+(use-package projectile)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+
 ;;; ☒□ Magit □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 ;;; TODO investigate why commits in Rawsugar are so slow
 (use-package magit)
-
 (use-package magit-todos)
 (magit-todos-mode)
+
+(use-package forge
+  :after magit)
 
 ;;; Customizations for reference. Note other kinds of project structure
 ;;; are likely to require changes to magit-todos-exclude-globs, otherwise
@@ -61,6 +72,15 @@
        (require 'init-ubuntu))
       ((eq system-type 'darwin)
        (require 'init-mac)))
+
+;;; ☒□ variosu formats □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+(use-package yaml-mode)
+(use-package svg)
+
+;;; ☒□ R □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+(use-package ess)
 
 ;;; ☒□ Customizations □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
@@ -163,11 +183,6 @@ mouse-3: Remove current window from display")))))))
 
 ;;; ☒□ Themes □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-;; (defun zenburn ()
-;;   (interactive)
-;;   (load "zenburn")
-;;   (zenburn))
-
 (when window-system
   (add-to-list 'custom-theme-load-path "/misc/repos/emacs-color-theme-solarized/")
   (load-theme 'solarized t)
@@ -178,6 +193,8 @@ mouse-3: Remove current window from display")))))))
   (set-frame-parameter nil 'background-mode (if darkness 'light 'dark))
   (enable-theme 'solarized)
   (setf darkness (not darkness)))
+
+(use-package zenburn-theme)
 
 ;;; ☒□ Fonts and Unicode □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 

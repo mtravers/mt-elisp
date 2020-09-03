@@ -26,33 +26,44 @@
 
 ;;; TODO something like this for Preview, returning file urls
 
-;;; TODO generalize below so can work with Brave, other browsers
-
-(defconst applescript-get-chrome-url
-  "tell application \"Google Chrome\"
+(defun applescript-get-browser-url (browser)
+  (format "tell application \"%s\"
 	get URL of active tab of first window
 end tell"
-  )
+	  browser))
 
-(defconst applescript-get-chrome-window-urls
-  "tell application \"Google Chrome\"
+(defun applescript-get-browser-window-urls (browser)
+  (format "tell application \"%s\"
 	get URL of tabs of first window
 end tell"
-  )
+	  browser))
 
-(defconst applescript-get-chrome-all-urls
-  "tell application \"Google Chrome\"
+(defun applescript-get-browser-all-urls (browser)
+  (format "tell application \"%s\"
 	get URL of tabs of windows
 end tell"
-  )
+	  browser))
 
+(defun yank-browser-url (browser)
+  "Yank current URL from Browser. C-u prefix yanks URLs from all tabs of current window, C-u C-u from all windows"
+  (case (car current-prefix-arg)
+    (4 (applescript-yank-list
+	(applescript-get-browser-window-urls browser)))
+    (16
+     (applescript-yank-list
+      (applescript-get-browser-all-urls browser)))
+    (t
+     (applescript-yank
+      (applescript-get-browser-url browser)))))
+
+(defun yank-brave-url ()
+ (interactive)
+ (yank-browser-url brave))
+
+;;; Not working for very unknown reasons. The Brave version works.
 (defun yank-chrome-url ()
-  "Yank current URL from Chrome. C-u prefix yanks URLs from all tabs of current window, C-u C-u from all windows"
-  (interactive)
-   (case (car current-prefix-arg)
-     (4 (applescript-yank-list applescript-get-chrome-window-urls))
-     (16 (applescript-yank-list applescript-get-chrome-all-urls))
-     (t (applescript-yank applescript-get-chrome-url))))
+ (interactive)
+ (yank-browser-url chrome))
 
 ;;; TODO fucks up quotes. Maybe just replace with formatted-yank which works better?
 (defun yank-chrome-selection ()
@@ -82,11 +93,21 @@ Set theText to the clipboard" )
 
 ;;; Idea_stupid: work in HTML mode as well
 ;;; TODO this leaves pointer in shitty place
-(defun link-chrome ()
-  "Make an org-mode hyperlink from region to current chrome url"
-  (interactive)
+(defun link-browser (browser)
+  "Make an org-mode hyperlink from region to current browser url"
   (applescript-apply #'link
-   applescript-get-chrome-url))
+		     (applescript-get-browser-url browser)))
+
+(defconst brave "Brave Browser")
+(defconst chrome "Google Chrome")
+
+(defun link-chrome ()
+  (interactive)
+  (link-browser chrome))
+
+(defun link-brave ()
+  (interactive)
+  (link-browser brave))
 
 (defvar screenshot-directory "~/Desktop/")
 

@@ -77,6 +77,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["#3F3F3F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#DCDCCC"])
  '(backup-directory-alist (quote ((".*" . "~/.saves") ("" . ""))))
  '(cider-cljs-lein-repl
    "(do (require 'figwheel-sidecar.repl-api) (figwheel-sidecar.repl-api/start-figwheel!) (figwheel-sidecar.repl-api/cljs-repl))")
@@ -88,14 +90,16 @@
    (quote
     (init-state render render-state will-mount should-update will-receive-props will-update did-update will-unmount)))
  '(comint-process-echoes t)
+ '(company-quickhelp-color-background "#4F4F4F")
+ '(company-quickhelp-color-foreground "#DCDCCC")
  '(custom-enabled-themes (quote (zenburn)))
  '(custom-safe-themes
    (quote
-    ("8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
+    ("0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
  '(deft-default-extension "org" t)
- '(deft-directory "/misc/working/org-roam/files")
- '(deft-recursive t)
- '(deft-use-filter-string-for-filename t)
+ '(deft-directory "/misc/working/org-roam/files" t)
+ '(deft-recursive t t)
+ '(deft-use-filter-string-for-filename t t)
  '(delete-old-versions t)
  '(describe-char-unidata-list
    (quote
@@ -108,6 +112,7 @@
  '(exec-path
    (quote
     ("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin" nil "/usr/local/bin")))
+ '(fci-rule-color "#383838")
  '(file-precious-flag t)
  '(fill-column 100)
  '(git-commit-summary-max-length 120)
@@ -129,7 +134,7 @@
 	   " " filename-and-process)
      (mark " "
 	   (name 16 -1)
-	   " " filename))))
+	   " " filename))) t)
  '(ido-show-dot-for-dired t)
  '(kept-new-versions 3)
  '(line-move-visual t)
@@ -137,9 +142,8 @@
  '(magit-todos-branch-list t)
  '(magit-todos-exclude-globs (quote ("/resources/*")))
  '(magit-todos-keyword-suffix ":?")
- '(magit-todos-scanner (quote magit-todos--scan-with-rg))
  '(magit-todos-keywords (quote ("TODO" "TEMP" "HHH" "OBSO")))
-
+ '(magit-todos-scanner (quote magit-todos--scan-with-rg))
  '(markdown-command "/usr/local/bin/markdown")
  '(mode-line-format
    (quote
@@ -194,6 +198,9 @@ mouse-3: Remove current window from display"))))
 	  (help-echo "mouse-1: Select (drag to resize)
 mouse-2: Make current window occupy the whole frame
 mouse-3: Remove current window from display")))))))
+ '(nrepl-message-colors
+   (quote
+    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(nrepl-sync-request-timeout 30)
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote meta))
@@ -251,9 +258,12 @@ textarea { overflow-x: auto; }
  '(package-selected-packages
    (quote
     (google-translate flyparens flylisp forge deft grip-mode emojify nov yo-moma exec-path-from-shell ess rainbow-blocks pdf-tools magit eyebrowse frames-only-mode slime cider yaml-mode workgroups2 w3m unicode-fonts twittering-mode ttl-mode sparql-mode smart-mode-line scala-mode2 save-visited-files rspec-mode rainbow-delimiters pivotal-tracker pig-mode markdown-mode link less-css-mode json-mode js2-mode htmlize helm-open-github helm-itunes groovy-mode gradle-mode fringe-helper eruby-mode dired-toggle-sudo dash-at-point connection color-theme cider-decompile bpe apples-mode ample-theme ack ac-nrepl ac-cider 2048-game)))
+ '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(safe-local-variable-values
    (quote
-    ((Package . GEOMETRY)
+    ((Default-character-style :SWISS :ROMAN :NORMAL)
+     (Package . COMMON-LISP-USER)
+     (Package . GEOMETRY)
      (cider-default-cljs-repl quote figwheel-main)
      (elisp-lint-indent-specs
       (if-let* . 2)
@@ -326,6 +336,28 @@ textarea { overflow-x: auto; }
  '(smtpmail-smtp-server "smtp.gmail.com")
  '(smtpmail-smtp-service 587)
  '(tramp-default-method "scpx")
+ '(vc-annotate-background "#2B2B2B")
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#BC8383")
+     (40 . "#CC9393")
+     (60 . "#DFAF8F")
+     (80 . "#D0BF8F")
+     (100 . "#E0CF9F")
+     (120 . "#F0DFAF")
+     (140 . "#5F7F5F")
+     (160 . "#7F9F7F")
+     (180 . "#8FB28F")
+     (200 . "#9FC59F")
+     (220 . "#AFD8AF")
+     (240 . "#BFEBBF")
+     (260 . "#93E0E3")
+     (280 . "#6CA0A3")
+     (300 . "#7CB8BB")
+     (320 . "#8CD0D3")
+     (340 . "#94BFF3")
+     (360 . "#DC8CC3"))))
+ '(vc-annotate-very-old-color "#DC8CC3")
  '(vc-follow-symlinks t)
  '(vc-hg-program "/usr/local/bin/hg")
  '(version-control t))

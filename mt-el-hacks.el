@@ -282,6 +282,8 @@ Null prefix argument turns off the mode."
 ;;; TODO Pandoc introduces spurious _, haven't figured out how to fix that.
 ;;; TODO dies if selection contains image, generally could be less fragile
 ;;; TODO version of this that takes input from buffers/regions
+;;; TODO only works from Browser, change name to reflect that.
+
 (defun formatted-yank ()
   "Convert clipboard contents from HTML to Org and then paste (yank)."
   (interactive)
