@@ -6,7 +6,7 @@
 (setq slime-net-coding-system 'utf-8-unix)
 
 (defun slime-common ()
-  (require 'slime)
+  (use-package slime)
   (slime-customize)
   (slime-setup '(slime-repl))
   ;; has to come late

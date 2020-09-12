@@ -51,6 +51,18 @@
 (use-package cider
   :ensure t)
 
+;;; Flycheck, how did I live so long without this turned on?
+
+(use-package flycheck-clj-kondo
+  :ensure t)
+
+(use-package clojure-mode
+  :ensure t
+  :config
+  (require 'flycheck-clj-kondo))
+
+(global-flycheck-mode)
+
 (setq load-prefer-newer t)
 
 ;;; autocompile

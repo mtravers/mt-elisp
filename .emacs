@@ -79,7 +79,7 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#3F3F3F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#DCDCCC"])
- '(backup-directory-alist (quote ((".*" . "~/.saves") ("" . ""))))
+ '(backup-directory-alist '((".*" . "~/.saves") ("" . "")))
  '(cider-cljs-lein-repl
    "(do (require 'figwheel-sidecar.repl-api) (figwheel-sidecar.repl-api/start-figwheel!) (figwheel-sidecar.repl-api/cljs-repl))")
  '(cider-lein-command "/usr/local/bin/lein")
@@ -87,45 +87,39 @@
  '(cider-repl-history-file "~/.emacs.d/cider-repl-history")
  '(cider-repl-use-pretty-printing t)
  '(clojure-defun-indents
-   (quote
-    (init-state render render-state will-mount should-update will-receive-props will-update did-update will-unmount)))
+   '(init-state render render-state will-mount should-update will-receive-props will-update did-update will-unmount))
  '(comint-process-echoes t)
  '(company-quickhelp-color-background "#4F4F4F")
  '(company-quickhelp-color-foreground "#DCDCCC")
- '(custom-enabled-themes (quote (zenburn)))
+ '(custom-enabled-themes '(zenburn))
  '(custom-safe-themes
-   (quote
-    ("0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
+   '("0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
  '(deft-default-extension "org" t)
- '(deft-directory "/misc/working/org-roam/files" t)
- '(deft-recursive t t)
- '(deft-use-filter-string-for-filename t t)
+ '(deft-directory "/misc/working/org-roam/files")
+ '(deft-recursive t)
+ '(deft-use-filter-string-for-filename t)
  '(delete-old-versions t)
  '(describe-char-unidata-list
-   (quote
-    (name old-name general-category decomposition numeric-value iso-10646-comment)))
+   '(name old-name general-category decomposition numeric-value iso-10646-comment))
  '(desktop-save-mode t)
  '(dired-kept-versions 3)
  '(display-line-numbers nil)
  '(electric-pair-mode t)
  '(electric-pair-skip-self t)
  '(exec-path
-   (quote
-    ("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin" nil "/usr/local/bin")))
+   '("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin" nil "/usr/local/bin"))
  '(fci-rule-color "#383838")
  '(file-precious-flag t)
  '(fill-column 100)
  '(git-commit-summary-max-length 120)
- '(global-auto-revert-ignore-modes (quote (archive-mode)))
+ '(global-auto-revert-ignore-modes '(archive-mode))
  '(global-auto-revert-mode t)
  '(global-display-line-numbers-mode nil)
  '(grep-find-ignored-directories
-   (quote
-    ("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "logs" "log")))
+   '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "logs" "log"))
  '(grep-save-buffers nil)
  '(ibuffer-formats
-   (quote
-    ((mark modified read-only " "
+   '((mark modified read-only " "
 	   (name 30 30 :left :elide)
 	   " "
 	   (size 9 -1 :right)
@@ -134,20 +128,19 @@
 	   " " filename-and-process)
      (mark " "
 	   (name 16 -1)
-	   " " filename))) t)
+	   " " filename)))
  '(ido-show-dot-for-dired t)
  '(kept-new-versions 3)
  '(line-move-visual t)
  '(magit-git-executable "/usr/local/bin/git")
  '(magit-todos-branch-list t)
- '(magit-todos-exclude-globs (quote ("/resources/*")))
+ '(magit-todos-exclude-globs '("/resources/*"))
  '(magit-todos-keyword-suffix ":?")
- '(magit-todos-keywords (quote ("TODO" "TEMP" "HHH" "OBSO")))
- '(magit-todos-scanner (quote magit-todos--scan-with-rg))
+ '(magit-todos-keywords '("TODO" "TEMP" "HHH" "OBSO"))
+ '(magit-todos-scanner 'magit-todos--scan-with-rg)
  '(markdown-command "/usr/local/bin/markdown")
  '(mode-line-format
-   (quote
-    ("%e"
+   '("%e"
      (:eval
       (if
 	  (display-graphic-p)
@@ -187,7 +180,7 @@ mouse-3: Remove current window from display"))))
      (:eval
       (propertize
        (format-time-string "%m/%d %H:%M")
-       (quote help-echo)
+       'help-echo
        (concat
 	(format-time-string "%c; ")
 	(emacs-uptime "Uptime:%hh"))))
@@ -197,13 +190,12 @@ mouse-3: Remove current window from display"))))
 	#("-%-" 0 3
 	  (help-echo "mouse-1: Select (drag to resize)
 mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display")))))))
+mouse-3: Remove current window from display"))))))
  '(nrepl-message-colors
-   (quote
-    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+   '("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3"))
  '(nrepl-sync-request-timeout 30)
- '(ns-alternate-modifier (quote none))
- '(ns-command-modifier (quote meta))
+ '(ns-alternate-modifier 'none)
+ '(ns-command-modifier 'meta)
  '(org-export-html-style
    "<style type=\"text/css\">
 html { font-family: DejaVu Sans; font-size: 12pt; }
@@ -249,19 +241,17 @@ textarea { overflow-x: auto; }
 </style>")
  '(org-export-html-style-include-default nil)
  '(org-export-preserve-breaks t)
+ '(org-export-with-broken-links 'mark)
  '(org-modules
-   (quote
-    (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-special-blocks)))
+   '(org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-special-blocks))
  '(org-roam-directory "/misc/working/org-roam/files")
  '(org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox")
  '(org-timer-default-timer "5")
  '(package-selected-packages
-   (quote
-    (google-translate flyparens flylisp forge deft grip-mode emojify nov yo-moma exec-path-from-shell ess rainbow-blocks pdf-tools magit eyebrowse frames-only-mode slime cider yaml-mode workgroups2 w3m unicode-fonts twittering-mode ttl-mode sparql-mode smart-mode-line scala-mode2 save-visited-files rspec-mode rainbow-delimiters pivotal-tracker pig-mode markdown-mode link less-css-mode json-mode js2-mode htmlize helm-open-github helm-itunes groovy-mode gradle-mode fringe-helper eruby-mode dired-toggle-sudo dash-at-point connection color-theme cider-decompile bpe apples-mode ample-theme ack ac-nrepl ac-cider 2048-game)))
- '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
+   '(google-translate flyparens flylisp forge deft grip-mode emojify nov yo-moma exec-path-from-shell ess rainbow-blocks pdf-tools magit eyebrowse frames-only-mode slime cider yaml-mode workgroups2 w3m unicode-fonts twittering-mode ttl-mode sparql-mode smart-mode-line scala-mode2 save-visited-files rspec-mode rainbow-delimiters pivotal-tracker pig-mode markdown-mode link less-css-mode json-mode js2-mode htmlize helm-open-github helm-itunes groovy-mode gradle-mode fringe-helper eruby-mode dired-toggle-sudo dash-at-point connection color-theme cider-decompile bpe apples-mode ample-theme ack ac-nrepl ac-cider 2048-game))
+ '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-values
-   (quote
-    ((Default-character-style :SWISS :ROMAN :NORMAL)
+   '((Default-character-style :SWISS :ROMAN :NORMAL)
      (Package . COMMON-LISP-USER)
      (Package . GEOMETRY)
      (cider-default-cljs-repl quote figwheel-main)
@@ -294,17 +284,13 @@ textarea { overflow-x: auto; }
 	   (phase-context 2)
 	   (defmethod-plan 2))
      (eval define-clojure-indent
-	   (def-collect-plan-fn
-	     (quote defun)))
+	   (def-collect-plan-fn 'defun))
      (eval define-clojure-indent
-	   (defplan
-	     (quote defun))
-	   (def-aggregate-plan-fn
-	     (quote defun)))
+	   (defplan 'defun)
+	   (def-aggregate-plan-fn 'defun))
      (prompt-to-byte-compile)
      (eval define-clojure-indent
-	   (codepoint-case
-	    (quote defun)))
+	   (codepoint-case 'defun))
      (Package . FLEXI-STREAMS)
      (Package . CHUNGA)
      (Lowercase . Yes)
@@ -329,8 +315,8 @@ textarea { overflow-x: auto; }
      (Syntax . COMMON-LISP)
      (package . net\.aserve)
      (Package . CCL)
-     (encoding . utf-8))))
- '(send-mail-function (quote smtpmail-send-it))
+     (encoding . utf-8)))
+ '(send-mail-function 'smtpmail-send-it)
  '(sentence-end-double-space nil)
  '(size-indication-mode t)
  '(smtpmail-smtp-server "smtp.gmail.com")
@@ -338,8 +324,7 @@ textarea { overflow-x: auto; }
  '(tramp-default-method "scpx")
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
-   (quote
-    ((20 . "#BC8383")
+   '((20 . "#BC8383")
      (40 . "#CC9393")
      (60 . "#DFAF8F")
      (80 . "#D0BF8F")
@@ -356,7 +341,7 @@ textarea { overflow-x: auto; }
      (300 . "#7CB8BB")
      (320 . "#8CD0D3")
      (340 . "#94BFF3")
-     (360 . "#DC8CC3"))))
+     (360 . "#DC8CC3")))
  '(vc-annotate-very-old-color "#DC8CC3")
  '(vc-follow-symlinks t)
  '(vc-hg-program "/usr/local/bin/hg")
