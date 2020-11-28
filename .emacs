@@ -33,7 +33,7 @@
 ;;; this adds org-roam-mode to all buffers? Not what I want
 ;      :hook 
 ;      (after-init . org-roam-mode)
-      :straight (:host github :repo "jethrokuan/org-roam" :branch "develop")
+;      :straight (:host github :repo "jethrokuan/org-roam" :branch "develop")
       :custom
       (org-roam-directory "/misc/working/org-roam/files")
       :bind (:map org-roam-mode-map
@@ -397,15 +397,6 @@ textarea { overflow-x: auto; }
   (startup-shell "*datomic-peer*" "." "~/Downloads/datomic-pro-0.9.5951/bin/run -m datomic.peer-server -h localhost -p 8998 -a myaccesskey,mysecret -d rawsugar-test,datomic:dev://localhost:4334/rawsugar-test"))
 
 
-;;; Let's try clj-refactor. No lets not
-
-;(require 'clj-refactor)
-
-'(defun my-clojure-mode-hook ()
-  (clj-refactor-mode 1)
-  (yas-minor-mode 1) ; for adding require/use/import statements
-  ;; This choice of keybinding leaves cider-macroexpand-1 unbound
-  (cljr-add-keybindings-with-prefix "C-c C-m"))
 
 ;;; Was causing problems, turn this on a bit at a time.
 ;(add-hook 'clojure-mode-hook #'my-clojure-mode-hook)

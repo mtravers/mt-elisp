@@ -53,15 +53,26 @@
 
 ;;; Flycheck, how did I live so long without this turned on?
 
-(use-package flycheck-clj-kondo
-  :ensure t)
+;; (use-package flycheck-clj-kondo
+;;   :ensure t)
 
-(use-package clojure-mode
-  :ensure t
-  :config
-  (require 'flycheck-clj-kondo))
+;; (use-package clojure-mode
+;;   :ensure t
+;;   :config
+;;   (require 'flycheck-clj-kondo))
 
-(global-flycheck-mode)
+;; (global-flycheck-mode)
+
+
+;;; Let's try clj-refactor. No lets not
+
+;(require 'clj-refactor)
+
+'(defun my-clojure-mode-hook ()
+  (clj-refactor-mode 1)
+  (yas-minor-mode 1) ; for adding require/use/import statements
+  ;; This choice of keybinding leaves cider-macroexpand-1 unbound
+  (cljr-add-keybindings-with-prefix "C-c C-m"))
 
 (setq load-prefer-newer t)
 
@@ -144,7 +155,7 @@
 (autoload 'ibuffer "ibuffer" "List buffers." t)
 
 (add-hook 'text-mode-hook
-          '(lambda () 
+          '(lambda ()
 	     ;; see how this does
 	     (toggle-truncate-lines 0)
 	     (toggle-word-wrap 1)
@@ -215,11 +226,11 @@ mouse-3: Remove current window from display")))))))
 ;;; Nicer fonts
 
 (add-hook 'text-mode-hook (lambda () (variable-pitch-mode t))) ;+++ unfortunately this turns it on for html
-(add-hook 'eww-mode-hook (lambda () (variable-pitch-mode t))) 
+(add-hook 'eww-mode-hook (lambda () (variable-pitch-mode t)))
 (add-hook 'org-mode-hook
 	  (lambda ()
 	    (variable-pitch-mode t)))
-	    
+
 (add-hook 'shell-mode-hook (lambda () (set-buffer-process-coding-system 'mule-utf-8 'mule-utf-8)))
 
 ;;; Smart quotes
@@ -236,7 +247,7 @@ mouse-3: Remove current window from display")))))))
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
-(global-set-key "\M-`" 'other-window)	;Make M-` follow Mac convention, roughly 
+(global-set-key "\M-`" 'other-window)	;Make M-` follow Mac convention, roughly
 
 ;;; autocomplete needs to work
 (add-hook 'org-mode-hook
@@ -277,7 +288,7 @@ mouse-3: Remove current window from display")))))))
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
-;;; Put auto-save and backup files out of band 
+;;; Put auto-save and backup files out of band
 ;;; https://ogbe.net/emacsconfig.html
 ;;; Backup seems to only sometimes work, not sure why
 ;;; Breaks recover session, argh
@@ -301,7 +312,7 @@ mouse-3: Remove current window from display")))))))
 ;;    delete-by-moving-to-trash t
 ;;    kept-new-versions 6
 ;;    kept-old-versions 2
-;;    version-control t)  
+;;    version-control t)
 
 ;; (setq backup-directory-alist
 ;;       `((".*" . ,temporary-file-directory)))
@@ -327,7 +338,7 @@ mouse-3: Remove current window from display")))))))
           (untabify (1- (point)) (point-max))))
   nil)
 
-(add-hook 'java-mode-hook 
+(add-hook 'java-mode-hook
           '(lambda ()
              (make-local-variable 'write-contents-hooks)
              (add-hook 'write-contents-hooks 'java-mode-untabify)))
@@ -342,11 +353,10 @@ mouse-3: Remove current window from display")))))))
 
 (setq show-paren-style 'expression) ; looks good with non-bold show-paren-match face
 ;(setq show-paren-style 'parenthesis)
-(show-paren-mode 1)	
+(show-paren-mode 1)
 (setq show-paren-delay 0.33)
 
 ;;; Dash is a documentation browser (Mac only)
 (global-set-key "\C-cd" 'dash-at-point)
 
 (provide 'mt-init)
-
