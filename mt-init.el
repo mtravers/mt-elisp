@@ -26,6 +26,7 @@
 (use-package magit)
 (use-package magit-todos)
 (magit-todos-mode)
+(use-package git-link)			;M-x git-link to get github links to source
 
 (use-package forge
   :after magit)
@@ -46,33 +47,15 @@
 ;;  '(magit-todos-keywords (quote ("TODO" "HHH")))
 ;; (custom-set-variables  '(magit-todos-keywords (quote ("TODO" "TEMP" "HHH" "OBSO"))))
 
+;;; ☒□ PDFs □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+;;; Also might require some installation on new system, M-x pdf-tools-install ???
+(use-package pdf-tools)
+
 ;;; ☒□ Clojure □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-(use-package cider
-  :ensure t)
+(require 'mt-cider-new)
 
-;;; Flycheck, how did I live so long without this turned on?
-
-;; (use-package flycheck-clj-kondo
-;;   :ensure t)
-
-;; (use-package clojure-mode
-;;   :ensure t
-;;   :config
-;;   (require 'flycheck-clj-kondo))
-
-;; (global-flycheck-mode)
-
-
-;;; Let's try clj-refactor. No lets not
-
-;(require 'clj-refactor)
-
-'(defun my-clojure-mode-hook ()
-  (clj-refactor-mode 1)
-  (yas-minor-mode 1) ; for adding require/use/import statements
-  ;; This choice of keybinding leaves cider-macroexpand-1 unbound
-  (cljr-add-keybindings-with-prefix "C-c C-m"))
 
 (setq load-prefer-newer t)
 
@@ -207,7 +190,7 @@ mouse-3: Remove current window from display")))))))
 ;;; ☒□ Themes □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (when window-system
-  (add-to-list 'custom-theme-load-path "/misc/repos/emacs-color-theme-solarized/")
+  (add-to-list 'custom-theme-load-path "/opt/mt/repos/emacs-color-theme-solarized/")
   (load-theme 'solarized t)
   (setq darkness nil))
 
@@ -231,9 +214,21 @@ mouse-3: Remove current window from display")))))))
 	  (lambda ()
 	    (variable-pitch-mode t)))
 
+;;; ☒□ Shell □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
 (add-hook 'shell-mode-hook (lambda () (set-buffer-process-coding-system 'mule-utf-8 'mule-utf-8)))
 
-;;; Smart quotes
+;;; Trying out vterm - didn't past cost/benefit test, sorry
+;;; (use-package vterm)
+;;; see in .bashrc: PROMPT_COMMAND='echo -ne "\033]0;${PWD##*/}\007"'
+;;; relies on customization (setq vterm-buffer-name-string "*vterm %s*")
+;;; TODO make schnell that uses vterm
+;;; + colors work right, prompts are better
+;;; - Does not tell emacs about cd like M-x shell, that's quite a disadvantage
+;;; - normal keybindings like C-p don't work
+;;; - C-s doesn't work, not obvious how to search back.
+
+;;; ☒□ Smart quotes □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 ;;; These are more trouble then they are worth, so turned off
 ;; (require 'smart-quotes)

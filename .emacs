@@ -2,6 +2,18 @@
 
 ;;; Symlink ~/.emacs here. TODO much of this should go into mt-init.el 
 
+;;; When desperate: https://emacs.stackexchange.com/questions/ask
+
+;;; Argh. Trying to find out who is fucking load-history. This is not working
+;;; See end of file
+;; (require 'cl)
+;; (setq message-log-max 1000)
+;; (advice-add
+;;  'load :after
+;;  #'(lambda (&rest foo)
+;;      (unless (every #'stringp (mapcar #'car load-history))
+;;        (message (prin1-to-string (list :FUCKED (length load-history) foo (first load-history)))))))
+
 ;;; Going Straight
 
 (defvar bootstrap-version)
@@ -21,21 +33,36 @@
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t)
 
+;;; Automatically update packages
+
+(use-package paradox
+  :init
+  (setq paradox-github-token t)
+  (setq paradox-execute-asynchronously t)
+  (setq paradox-automatically-star t))
+
+(paradox-upgrade-packages)		;might be too slow to do this on startup?
+
 (use-package org)
+
+;;; Turn off electric indent
+(add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
+
 (use-package ox-reveal)
 
+;;; Turning off some of this since not really using it
 
 ;;; Note: there doesn't seem to be a way to update other than to go to the repo dir
 ;;; ~/.emacs.d/straight/repos/org-roam
 ;;; and doing a pull.
-(use-package org-roam
+'(use-package org-roam
       :after org
 ;;; this adds org-roam-mode to all buffers? Not what I want
 ;      :hook 
 ;      (after-init . org-roam-mode)
 ;      :straight (:host github :repo "jethrokuan/org-roam" :branch "develop")
       :custom
-      (org-roam-directory "/misc/working/org-roam/files")
+      (org-roam-directory "/opt/mt/working/org-roam/files")
       :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
@@ -48,7 +75,7 @@
 ;;; Noticing that ALL my add-hooks are commented out...I must not understand how this actually works.
 ;(add-hook 'after-init-hook 'org-roam--build-cache-async)
 
-(use-package deft
+'(use-package deft
   :after org
   :bind
   ("C-c n d" . deft)
@@ -56,9 +83,9 @@
   (deft-recursive t)
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
-  (deft-directory "/misc/working/org-roam/files"))
+  (deft-directory "/opt/mt/working/org-roam/files"))
 
-(add-to-list 'load-path (expand-file-name "/misc/repos/mt-elisp"))
+(add-to-list 'load-path (expand-file-name "/opt/mt/repos/mt-elisp"))
 
 (require 'mt-init)
 
@@ -71,6 +98,8 @@
 ;;; Makes ctrl-alt → move to next-right pane, etc.
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
+
+;;; TODO Magit-todos requires space between comment chars and tag (eg won't detecit ;;TODO).
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -93,11 +122,11 @@
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(custom-enabled-themes '(zenburn))
  '(custom-safe-themes
-   '("0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
+   '("ea5822c1b2fb8bb6194a7ee61af3fe2cc7e2c7bab272cbb498a0234984e1b2d9" "0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
  '(deft-default-extension "org" t)
- '(deft-directory "/misc/working/org-roam/files")
- '(deft-recursive t)
- '(deft-use-filter-string-for-filename t)
+ '(deft-directory "/opt/mt/working/org-roam/files" t)
+ '(deft-recursive t t)
+ '(deft-use-filter-string-for-filename t t)
  '(delete-old-versions t)
  '(describe-char-unidata-list
    '(name old-name general-category decomposition numeric-value iso-10646-comment))
@@ -108,9 +137,11 @@
  '(electric-pair-skip-self t)
  '(exec-path
    '("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin" nil "/usr/local/bin"))
+ '(explicit-shell-file-name "bash")
  '(fci-rule-color "#383838")
  '(file-precious-flag t)
  '(fill-column 100)
+ '(flycheck-clj-kondo-clj-executable "/usr/local/bin/clj-kondo")
  '(git-commit-summary-max-length 120)
  '(global-auto-revert-ignore-modes '(archive-mode))
  '(global-auto-revert-mode t)
@@ -244,14 +275,24 @@ textarea { overflow-x: auto; }
  '(org-export-with-broken-links 'mark)
  '(org-modules
    '(org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-special-blocks))
- '(org-roam-directory "/misc/working/org-roam/files")
+ '(org-roam-directory "/opt/mt/working/org-roam/files")
  '(org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox")
  '(org-timer-default-timer "5")
  '(package-selected-packages
    '(google-translate flyparens flylisp forge deft grip-mode emojify nov yo-moma exec-path-from-shell ess rainbow-blocks pdf-tools magit eyebrowse frames-only-mode slime cider yaml-mode workgroups2 w3m unicode-fonts twittering-mode ttl-mode sparql-mode smart-mode-line scala-mode2 save-visited-files rspec-mode rainbow-delimiters pivotal-tracker pig-mode markdown-mode link less-css-mode json-mode js2-mode htmlize helm-open-github helm-itunes groovy-mode gradle-mode fringe-helper eruby-mode dired-toggle-sudo dash-at-point connection color-theme cider-decompile bpe apples-mode ample-theme ack ac-nrepl ac-cider 2048-game))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-values
-   '((Default-character-style :SWISS :ROMAN :NORMAL)
+   '((eval require 'org-roam-dev)
+     (org-src-preserve-indentation)
+     (eval and
+	   (require 'ox-extra nil t)
+	   (ox-extras-activate
+	    '(ignore-headlines)))
+     (eval require 'ox-texinfo+ nil t)
+     (eval require 'org-man nil t)
+     (eval add-hook 'after-save-hook 'org-html-export-to-html t t)
+     (magit-todos-exclude-globs "index.js")
+     (Default-character-style :SWISS :ROMAN :NORMAL)
      (Package . COMMON-LISP-USER)
      (Package . GEOMETRY)
      (cider-default-cljs-repl quote figwheel-main)
@@ -321,6 +362,7 @@ textarea { overflow-x: auto; }
  '(size-indication-mode t)
  '(smtpmail-smtp-server "smtp.gmail.com")
  '(smtpmail-smtp-service 587)
+ '(tool-bar-mode nil)
  '(tramp-default-method "scpx")
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
@@ -393,7 +435,7 @@ textarea { overflow-x: auto; }
 
 (defun start-datomic ()
   (interactive)
-  (startup-shell "*datomic-transactor*" "." "~/Downloads/datomic-pro-0.9.5951/bin/transactor /misc/repos/pici/rawsugar/credentials/dev-transactor.properties")
+  (startup-shell "*datomic-transactor*" "." "~/Downloads/datomic-pro-0.9.5951/bin/transactor ~/pici/repos/rawsugar/credentials/dev-transactor.properties")
   (startup-shell "*datomic-peer*" "." "~/Downloads/datomic-pro-0.9.5951/bin/run -m datomic.peer-server -h localhost -p 8998 -a myaccesskey,mysecret -d rawsugar-test,datomic:dev://localhost:4334/rawsugar-test"))
 
 
@@ -411,7 +453,15 @@ textarea { overflow-x: auto; }
 (with-eval-after-load 'magit
   (require 'forge))
 
+;;; Problem: load-history gets corrupted with an entry whose car is not a string
+;;; ((require . info) ... )
+;;; Can't figure out why, so this hack.
+(defun clean-load-history ()
+  (setq load-history
+	(remove-if-not #'(lambda (x) (stringp (car x))) load-history)))
 
-     
+;;; WHICH STILL DOES NOT SOLVE THE FUCKING PROBLEM!
+;;; Because corruption happens AFTER .emacs, so need to run this by hand later
+'(clean-load-history)
 
 

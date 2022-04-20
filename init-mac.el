@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(variable-pitch ((t (:height 1.2 :width normal :family "Gill Sans")))))
 
-(when window-system
+(when (eq "ns" window-system)
   (ns-toggle-toolbar))
 
 (provide 'init-mac)

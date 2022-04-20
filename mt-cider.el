@@ -1,5 +1,4 @@
-(require 'cider)
-
+(use-package cider :ensure t)
 
 ;;; This implements the convention of foo.test.core as the test ns for foo.core.
 
@@ -23,15 +22,15 @@
 
 ;;; Not really working
 
-(require 'ac-cider)
-(add-hook 'cider-mode-hook 'ac-flyspell-workaround)
-(add-hook 'cider-mode-hook 'ac-cider-setup)
-(add-hook 'cider-mode-hook 'eldoc-mode)	; echo-area arglists
-(add-hook 'cider-repl-mode-hook 'ac-cider-setup)
-(eval-after-load "auto-complete"
-  '(progn
-     (add-to-list 'ac-modes 'cider-mode)
-     (add-to-list 'ac-modes 'cider-repl-mode)))
+;; (require 'ac-cider)
+;; (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+;; (add-hook 'cider-mode-hook 'ac-cider-setup)
+;; (add-hook 'cider-mode-hook 'eldoc-mode)	; echo-area arglists
+;; (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+;; (eval-after-load "auto-complete"
+;;   '(progn
+;;      (add-to-list 'ac-modes 'cider-mode)
+;;      (add-to-list 'ac-modes 'cider-repl-mode)))
 
 (defun set-auto-complete-as-completion-at-point-function ()
   (setq completion-at-point-functions '(auto-complete)))
@@ -60,3 +59,11 @@
     (message "lein-params set to: %s" lein-params)
     (set-variable 'cider-lein-parameters lein-params)
     (cider-jack-in '())))
+
+;;; TODO probably some better way to make an alias
+(defun jackoff ()
+  (interactive)
+  ;; tired of typing this
+  (cider-jack-in-clj&cljs))
+
+(provide 'mt-cider)

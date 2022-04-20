@@ -96,14 +96,10 @@ end tell")
 ;;; Useful for scripted setup of dev environments
 ;;; eg:   (startup-shell "*server*" "/project/ruby" "script/server")
 ;;; TODO would be nice to have errors in one of these alert the user. 
-(defun startup-shell (name dir command)
-  (send-to-shell (shell name) (format "cd %s;%s" dir command)))
-
-;;; Another thing that is almost there but not quite
-;;; might need (require 'ansi-color)
-(defun ansi-color-buffer ()
-  (interactive)
-  (ansi-color-apply-on-region (point-min) (point-max)))
+(defun startup-shell (name dir &rest commands)
+  (send-to-shell (shell name)
+		 (string-join (cons (format "cd %s" dir) commands)
+			      "; ")))
 
 ;;; ◇⟐◈ Decorativeness ◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐
 
@@ -267,12 +263,13 @@ Null prefix argument turns off the mode."
 	 auto-mode-alist))
 
 ;;; Has a dependency on magit, but I expect to always have that loaded.
+;;; See also M-x projectile-run-shell
 (defun schnell ()
   "Like shell but picks more intelligent buffer names, knows about git repos and will use toplevel if available"
   (interactive)
   (let* ((default-directory (or (magit-toplevel default-directory)
 				default-directory))
-	 (name (first (last (split-string-and-unquote default-directory "/")))))
+	 (name (car (last (split-string-and-unquote default-directory "/")))))
     (shell (generate-new-buffer-name (concat "*shell " name "*") ))))
 
 ;;; source: https://emacs.stackexchange.com/questions/12121/org-mode-parsing-rich-html-directly-when-pasting

@@ -9,6 +9,9 @@
 ;;; TODO – how about a mode where it just displays it, when it's a nonstandard char?
 ;;; M-x describe-char has elaborate logic that should be pulled out...
 
+;;; Haven't used this yet but it looks like fun
+;;; https://github.com/Codepoints/awesome-codepoints
+
 (defun desc-char (pos)
   (interactive "d")
   (let* ((char (char-after pos))

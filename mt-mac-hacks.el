@@ -44,8 +44,10 @@ end tell"
 end tell"
 	  browser))
 
+;;; Note: these have stopped working in the standed Mac Emacs, but they work OK in the more nativey implementation https://github.com/railwaycat/homebrew-emacsmacport
+
 (defun yank-browser-url (browser)
-  "Yank current URL from Browser. C-u prefix yanks URLs from all tabs of current window, C-u C-u from all windows"
+  "Yank current URL from Browser. C-u prefix yanks URLs from all tabs of current window, C-u C-u from all windows."
   (case (car current-prefix-arg)
     (4 (applescript-yank-list
 	(applescript-get-browser-window-urls browser)))
@@ -56,18 +58,21 @@ end tell"
      (applescript-yank
       (applescript-get-browser-url browser)))))
 
+(defconst brave "Brave Browser")
+(defconst chrome "Google Chrome")
+
 (defun yank-brave-url ()
  (interactive)
  (yank-browser-url brave))
 
-;;; Not working for very unknown reasons. The Brave version works.
+;;; Not working for very unknown reasons. The Brave version works (most of the time?).
 (defun yank-chrome-url ()
  (interactive)
  (yank-browser-url chrome))
 
 ;;; TODO fucks up quotes. Maybe just replace with formatted-yank which works better?
 (defun yank-chrome-selection ()
- "Yank current selection from Chrome"
+ "Yank current selection from Chrome."
   (interactive)
   (applescript-yank "tell application \"Google Chrome\"
 	copy selection of active tab of first window
@@ -86,7 +91,7 @@ Set theText to the clipboard" )
 ;;; TODO not mac specific
 ;;; TODO surely there is an existing command to do this? Yes, org-insert-link
 (defun link (url)
-  "Make an org-mode hyperlink from region"
+  "Make an org-mode hyperlink from region."
   (interactive "surl: ")
   (insert-around-region (concat "[[" url "][") "]]")
   (message "Linked %s" url))
@@ -98,8 +103,6 @@ Set theText to the clipboard" )
   (applescript-apply #'link
 		     (applescript-get-browser-url browser)))
 
-(defconst brave "Brave Browser")
-(defconst chrome "Google Chrome")
 
 (defun link-chrome ()
   (interactive)
@@ -140,3 +143,4 @@ Set theText to the clipboard" )
   )
 
 (provide 'mt-mac-hacks)
+;;; mt-mac-hacks.el ends here
