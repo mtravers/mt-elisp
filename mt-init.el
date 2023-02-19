@@ -19,6 +19,15 @@
 (use-package projectile)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
+;;; This organizes buffers by project, which is Obviously the Right Thing, but it's so slow as to be unusable. Pity.
+;;; https://github.com/purcell/ibuffer-projectile
+'(use-package ibuffer-projectile)
+'(add-hook 'ibuffer-hook
+    (lambda ()
+      (ibuffer-projectile-set-filter-groups)
+      (unless (eq ibuffer-sorting-mode 'alphabetic)
+        (ibuffer-do-sort-by-alphabetic))))
+
 
 ;;; ☒□ Magit □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
@@ -65,8 +74,6 @@
 ;; (auto-compile-on-load-mode)
 ;; (auto-compile-on-save-mode)
 
-(require 'mt-utils)
-(require 'mt-patches)
 (require 'mt-slime)
 (require 'mt-el-hacks)
 (require 'mt-mac-hacks)			;TODO conditionalize
@@ -79,14 +86,15 @@
       ((eq system-type 'darwin)
        (require 'init-mac)))
 
-;;; ☒□ variosu formats □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+;;; ☒□ various formats □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (use-package yaml-mode)
 (use-package svg)
 
 ;;; ☒□ R □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-(use-package ess)
+;;; Seems broken in a way that bricks Emacs. Look into it if I have to do R ever again
+;;; (use-package ess)
 
 ;;; ☒□ Customizations □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 

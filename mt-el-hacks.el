@@ -103,6 +103,13 @@ end tell")
 
 ;;; ◇⟐◈ Decorativeness ◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐
 
+;;; Found here, very useful: http://ergoemacs.org/emacs/elisp_idioms_batch.html
+(defun read-lines (fPath)
+  "Return a list of lines of a file at FPATH."
+  (with-temp-buffer
+    (insert-file-contents fPath)
+    (split-string (buffer-string) "\n" t)))
+
 (defvar border-file (concat mt-elisp-directory "data/borders.txt"))
 
 ;;; TODO this should be per-buffer
