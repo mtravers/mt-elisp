@@ -31,13 +31,15 @@
 
 ;; ;;; ☒□ Magit □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-;;; TODO investigate why commits in Rawsugar are so slow
 (use-package magit)
-;; (use-package magit-todos)
-;; (magit-todos-mode)
+
+;; Requires brew install rg, and some customization is needed esp with npm-based projects
+(use-package magit-todos)
+(magit-todos-mode)
+
 (use-package git-link)			;M-x git-link to get github links to source
 
-;; (use-package markdown-mode)
+(use-package markdown-mode)
 
 ;;; Like M-x git-link but produces markdown suitable for pasting in Logseq
 (defun git-link-markdown ()
@@ -77,8 +79,8 @@
 
 ;; ;;; ☒□ PDFs □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-;; ;;; Also might require some installation on new system, M-x pdf-tools-install ???
-;; (use-package pdf-tools)
+;; ;;; Requires  M-x pdf-tools-install (once per installation)
+(use-package pdf-tools)
 
 ;; ;;; ☒□ Clojure □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
@@ -96,7 +98,7 @@
 ;; (require 'mt-slime)
 (require 'mt-el-hacks)
 (require 'mt-mac-hacks)			;TODO conditionalize
-;; (require 'mt-punctual)
+(require 'mt-punctual)
 ;; (require 'mt-inversions)
 ;; (require 'mt-ucs)
 
@@ -107,7 +109,7 @@
 
 ;; ;;; ☒□ various formats □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-;; (use-package yaml-mode)
+(use-package yaml-mode)
 ;; (use-package svg)
 
 ;; ;;; ☒□ R □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
@@ -128,11 +130,11 @@
 ;; (setq windmove-wrap-around t )
 ;; (put 'set-goal-column 'disabled nil)
 
-;; ;;; Completions
-;; (dynamic-completion-mode t)
+;;; Completions
+(dynamic-completion-mode t)
 
-;; ;;; Key customization
-;; (define-key ctl-x-map "\C-r" 'revert-buffer)  ;C-x C-r is revert buffer
+;;; Key customization
+(define-key ctl-x-map "\C-r" 'revert-buffer)  ;C-x C-r is revert buffer
 ;; ;;Z is too close to X for this to exist there:
 ;; (global-unset-key "\C-z")
 ;; ;; Set up the keyboard so the delete key on both the regular keyboard
@@ -149,11 +151,8 @@
 ;; ;; enable visual feedback on selections
 ;; (setq-default transient-mark-mode t)
 
-;; ;; always end a file with a newline
-;; (setq require-final-newline t)
-
-;; ;; stop at the end of the file, not just add lines
-;; (setq next-line-add-newlines nil)
+;; always end a file with a newline
+(setq require-final-newline t)
 
 ;; ;; I keep hitting this accidently
 ;; (put 'downcase-region 'disabled nil)
@@ -207,7 +206,7 @@ mouse-3: Remove current window from display")))))))
  '(smtpmail-smtp-server "smtp.gmail.com")
  '(smtpmail-smtp-service 587)
  '(tramp-default-method "scpx")
- '(vc-hg-program "/usr/local/bin/hg"))
+ )
 
 ;;; ☒□ Themes □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
@@ -318,10 +317,11 @@ mouse-3: Remove current window from display")))))))
 ;;; Breaks recover session, argh
 ;;; 12/5/2017 this was my old customization, I'm going to try more aggresive auto-save
 ;; (defvar backup-dir (expand-file-name "~/.emacs.d/emacs_backup/"))
-;; (defvar autosave-dir (expand-file-name "~/.emacs.d/autosave/"))
+
 ;; (setq backup-directory-alist (list (cons ".*" backup-dir)))
-;; (setq auto-save-list-file-prefix autosave-dir)
-;; (setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
+(defvar autosave-dir (expand-file-name "~/.emacs.d/autosave/"))
+(setq auto-save-list-file-prefix autosave-dir)
+(setq auto-save-file-name-transforms `((".*" ,autosave-dir t)))
 ;; (setq tramp-backup-directory-alist backup-directory-alist)
 ;; (setq tramp-auto-save-directory autosave-dir)
 
@@ -367,6 +367,32 @@ mouse-3: Remove current window from display")))))))
              (make-local-variable 'write-contents-hooks)
              (add-hook 'write-contents-hooks 'java-mode-untabify)))
 
+;; ;;; ☒□ TypeScript □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+(use-package typescript-mode)
+
+;;; Emacs 29 only, and still not quite working
+;;; https://github.com/orzechowskid/tsx-mode.el/tree/emacs29
+;;; https://git.savannah.gnu.org/cgit/emacs.git/tree/admin/notes/tree-sitter/starter-guide?h=feature/tree-sitter
+(defun tsx ()
+  (use-package eglot)
+  (use-package coverlay)
+  (use-package origami)
+  (load "~/Downloads/css-in-js-mode.el")
+  (use-package corfu)
+  (load "~/.emacs.d/straight/repos/corfu/extensions/corfu-popupinfo.el")
+  (straight-use-package '(tsi :type git :host github :repo "orzechowskid/tsi.el"))
+  (straight-use-package '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el" :branch "emacs29"))
+  (setq tsx-mode-use-css-in-js nil)	;this requires a different grammar which I don't have?
+  (tsx-mode t)
+  (add-to-list 'auto-mode-alist '("\\.tsx$" . tsx-mode))
+
+  ;; Assorted tweaks towards working (not yet)
+  )
+
+;;; Apparently this just works? Above unnecessary?
+(add-to-list 'auto-mode-alist '("\\.tsx$" . tsx-ts-mode))
+
 ;; ;;; ☒□ Misc language support  □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
@@ -390,5 +416,8 @@ mouse-3: Remove current window from display")))))))
 (defun shell-clear-buffer ()
   (interactive)
   (comint-clear-buffer))
+
+
+
 
 (provide 'mt-init)
