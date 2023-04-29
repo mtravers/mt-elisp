@@ -27,14 +27,9 @@
 		 (ucs-insert char)
 		 (when current-prefix-arg
 		   (insert-tab)
-		   (insert (car char-pair))
+		   (insert name)
 		   (insert ?\n))))
 	   (ucs-names)))
-
-(defun string-replace (this withthat in)
-  "replace THIS with WITHTHAT' in the string IN"
-  (when (string-match this in)
-    (replace-match withthat nil nil in)))
 
 (defun buffer-string-replace (from to)
   (goto-char (point-min))

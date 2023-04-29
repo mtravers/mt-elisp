@@ -16,8 +16,6 @@
 
 ;;; Going Straight
 
-(defvar bootstrap-version)
-
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
       (bootstrap-version 5))
@@ -35,41 +33,41 @@
 
 ;;; Automatically update packages
 
-(use-package paradox
-  :init
-  (setq paradox-github-token t)
-  (setq paradox-execute-asynchronously t)
-  (setq paradox-automatically-star t))
+;; (use-package paradox
+;;   :init
+;;   (setq paradox-github-token t)
+;;   (setq paradox-execute-asynchronously t)
+;;   (setq paradox-automatically-star t))
 
-(paradox-upgrade-packages)		;might be too slow to do this on startup?
+;; (paradox-upgrade-packages)		;might be too slow to do this on startup?
 
 (use-package org)
 
-;;; Turn off electric indent
-(add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
+;; ;;; Turn off electric indent
+;; (add-hook 'org-mode-hook (lambda () (electric-indent-local-mode -1)))
 
-(use-package ox-reveal)
+;; (use-package ox-reveal)
 
-;;; Turning off some of this since not really using it
+;; ;;; Turning off some of this since not really using it
 
-;;; Note: there doesn't seem to be a way to update other than to go to the repo dir
-;;; ~/.emacs.d/straight/repos/org-roam
-;;; and doing a pull.
-'(use-package org-roam
-      :after org
-;;; this adds org-roam-mode to all buffers? Not what I want
-;      :hook 
-;      (after-init . org-roam-mode)
-;      :straight (:host github :repo "jethrokuan/org-roam" :branch "develop")
-      :custom
-      (org-roam-directory "/opt/mt/working/org-roam/files")
-      :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-show-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert)))
-      )
+;; ;;; Note: there doesn't seem to be a way to update other than to go to the repo dir
+;; ;;; ~/.emacs.d/straight/repos/org-roam
+;; ;;; and doing a pull.
+;; '(use-package org-roam
+;;       :after org
+;; ;;; this adds org-roam-mode to all buffers? Not what I want
+;; ;      :hook 
+;; ;      (after-init . org-roam-mode)
+;; ;      :straight (:host github :repo "jethrokuan/org-roam" :branch "develop")
+;;       :custom
+;;       (org-roam-directory "/opt/mt/working/org-roam/files")
+;;       :bind (:map org-roam-mode-map
+;;               (("C-c n l" . org-roam)
+;;                ("C-c n f" . org-roam-find-file)
+;;                ("C-c n g" . org-roam-show-graph))
+;;               :map org-mode-map
+;;               (("C-c n i" . org-roam-insert)))
+;;       )
 
 ;;; Blows out because fn is not defined yet
 ;;; Noticing that ALL my add-hooks are commented out...I must not understand how this actually works.
@@ -89,17 +87,17 @@
 
 (require 'mt-init)
 
+;;; https://github.com/purcell/exec-path-from-shell
 (use-package exec-path-from-shell)
 
-;;; https://github.com/purcell/exec-path-from-shell
 (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize))
 
-;;; Makes ctrl-alt → move to next-right pane, etc.
-(when (fboundp 'windmove-default-keybindings)
-  (windmove-default-keybindings))
+;; ;;; Makes ctrl-alt → move to next-right pane, etc.
+;; (when (fboundp 'windmove-default-keybindings)
+;;   (windmove-default-keybindings))
 
-;;; TODO Magit-todos requires space between comment chars and tag (eg won't detecit ;;TODO).
+;; ;;; TODO Magit-todos requires space between comment chars and tag (eg won't detecit ;;TODO).
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -111,7 +109,7 @@
  '(backup-directory-alist '((".*" . "~/.saves") ("" . "")))
  '(cider-cljs-lein-repl
    "(do (require 'figwheel-sidecar.repl-api) (figwheel-sidecar.repl-api/start-figwheel!) (figwheel-sidecar.repl-api/cljs-repl))")
- '(cider-lein-command "/usr/local/bin/lein")
+ '(cider-lein-command "/opt/homebrew/bin/lein")
  '(cider-prompt-for-symbol nil)
  '(cider-repl-history-file "~/.emacs.d/cider-repl-history")
  '(cider-repl-use-pretty-printing t)
@@ -120,9 +118,89 @@
  '(comint-process-echoes t)
  '(company-quickhelp-color-background "#4F4F4F")
  '(company-quickhelp-color-foreground "#DCDCCC")
+ '(connection-local-criteria-alist
+   '(((:application tramp :machine "localhost")
+      tramp-connection-local-darwin-ps-profile)
+     ((:application tramp :machine "Mikes-MacBook-Pro.local")
+      tramp-connection-local-darwin-ps-profile)
+     ((:application tramp)
+      tramp-connection-local-default-system-profile tramp-connection-local-default-shell-profile)))
+ '(connection-local-profile-alist
+   '((tramp-connection-local-darwin-ps-profile
+      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,uid,user,gid,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state=abcde" "-o" "ppid,pgid,sess,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etime,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (euid . number)
+       (user . string)
+       (egid . number)
+       (comm . 52)
+       (state . 5)
+       (ppid . number)
+       (pgrp . number)
+       (sess . number)
+       (ttname . string)
+       (tpgid . number)
+       (minflt . number)
+       (majflt . number)
+       (time . tramp-ps-time)
+       (pri . number)
+       (nice . number)
+       (vsize . number)
+       (rss . number)
+       (etime . tramp-ps-time)
+       (pcpu . number)
+       (pmem . number)
+       (args)))
+     (tramp-connection-local-busybox-ps-profile
+      (tramp-process-attributes-ps-args "-o" "pid,user,group,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "stat=abcde" "-o" "ppid,pgid,tty,time,nice,etime,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (user . string)
+       (group . string)
+       (comm . 52)
+       (state . 5)
+       (ppid . number)
+       (pgrp . number)
+       (ttname . string)
+       (time . tramp-ps-time)
+       (nice . number)
+       (etime . tramp-ps-time)
+       (args)))
+     (tramp-connection-local-bsd-ps-profile
+      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,euid,user,egid,egroup,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state,ppid,pgid,sid,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etimes,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (euid . number)
+       (user . string)
+       (egid . number)
+       (group . string)
+       (comm . 52)
+       (state . string)
+       (ppid . number)
+       (pgrp . number)
+       (sess . number)
+       (ttname . string)
+       (tpgid . number)
+       (minflt . number)
+       (majflt . number)
+       (time . tramp-ps-time)
+       (pri . number)
+       (nice . number)
+       (vsize . number)
+       (rss . number)
+       (etime . number)
+       (pcpu . number)
+       (pmem . number)
+       (args)))
+     (tramp-connection-local-default-shell-profile
+      (shell-file-name . "/bin/sh")
+      (shell-command-switch . "-c"))
+     (tramp-connection-local-default-system-profile
+      (path-separator . ":")
+      (null-device . "/dev/null"))))
  '(custom-enabled-themes '(zenburn))
  '(custom-safe-themes
-   '("ea5822c1b2fb8bb6194a7ee61af3fe2cc7e2c7bab272cbb498a0234984e1b2d9" "0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
+   '("28a34dd458a554d34de989e251dc965e3dc72bace7d096cdc29249d60f395a82" "ea5822c1b2fb8bb6194a7ee61af3fe2cc7e2c7bab272cbb498a0234984e1b2d9" "0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
  '(deft-default-extension "org" t)
  '(deft-directory "/opt/mt/working/org-roam/files" t)
  '(deft-recursive t t)
@@ -159,13 +237,13 @@
 	   " " filename-and-process)
      (mark " "
 	   (name 16 -1)
-	   " " filename)))
+	   " " filename)) t)
  '(ido-show-dot-for-dired t)
  '(kept-new-versions 3)
  '(line-move-visual t)
- '(magit-git-executable "/usr/local/bin/git")
  '(magit-todos-branch-list t)
- '(magit-todos-exclude-globs '("/resources/*"))
+ '(magit-todos-exclude-globs '("/resources/*" "/node_modules/*" "search_index.js"))
+ '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(magit-todos-keyword-suffix ":?")
  '(magit-todos-keywords '("TODO" "TEMP" "HHH" "OBSO"))
  '(magit-todos-scanner 'magit-todos--scan-with-rg)
@@ -176,37 +254,25 @@
       (if
 	  (display-graphic-p)
 	  #(" " 0 1
-	    (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))
+	    (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
 	#("-" 0 1
-	  (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole fr ame
-mouse-3: Remove current window from display"))))
+	  (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole fr ame\12mouse-3: Remove current window from display"))))
      mode-line-mule-info mode-line-client mode-line-modified mode-line-auto-compile mode-line-remote mode-line-frame-identification mode-line-buffer-identification
      #("   " 0 3
-       (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))
+       (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
      mode-line-position
      (vc-mode vc-mode)
      #("  " 0 2
-       (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))
+       (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
      mode-line-modes
      (which-func-mode
       ("" which-func-format
        #(" " 0 1
-	 (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))))
+	 (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))))
      (global-mode-string
       ("" global-mode-string
        #(" " 0 1
-	 (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))))
+	 (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))))
      "  "
      (:eval
       (propertize
@@ -219,57 +285,14 @@ mouse-3: Remove current window from display"))))
       (unless
 	  (display-graphic-p)
 	#("-%-" 0 3
-	  (help-echo "mouse-1: Select (drag to resize)
-mouse-2: Make current window occupy the whole frame
-mouse-3: Remove current window from display"))))))
+	  (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))))))
  '(nrepl-message-colors
    '("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3"))
  '(nrepl-sync-request-timeout 30)
  '(ns-alternate-modifier 'none)
  '(ns-command-modifier 'meta)
  '(org-export-html-style
-   "<style type=\"text/css\">
-html { font-family: DejaVu Sans; font-size: 12pt; }
-.title  { text-align: center; }
-.todo   { color: red; }
-.done   { color: green; }
-.tag    { background-color: #add8e6; font-weight:normal }
-.target { }
-.timestamp { color: #bebebe; }
-.timestamp-kwd { color: #5f9ea0; }
-.right  {margin-left:auto; margin-right:0px;  text-align:right;}
-.left   {margin-left:0px;  margin-right:auto; text-align:left;}
-.center {margin-left:auto; margin-right:auto; text-align:center;}
-p.verse { margin-left: 3% }
-pre {
-border: 1pt solid #AEBDCC;
-background-color: #F3F5F7;
-padding: 5pt;
-font-family: courier, monospace;
-font-size: 90%;
-overflow:auto;
-}
-table { border-collapse: collapse; }
-td, th { vertical-align: top;  }
-th.right  { text-align:center;  }
-th.left   { text-align:center;   }
-th.center { text-align:center; }
-td.right  { text-align:right;  }
-td.left   { text-align:left;   }
-td.center { text-align:center; }
-dt { font-weight: bold; }
-div.figure { padding: 0.5em; }
-div.figure p { text-align: center; }
-div.inlinetask {
-padding:10px;
-border:2px solid gray;
-margin:10px;
-background: #ffffcc;
-}
-textarea { overflow-x: auto; }
-.linenr { font-size:smaller }
-.code-highlighted {background-color:#ffff00;}
-</style>")
+   "<style type=\"text/css\">\12html { font-family: DejaVu Sans; font-size: 12pt; }\12.title  { text-align: center; }\12.todo   { color: red; }\12.done   { color: green; }\12.tag    { background-color: #add8e6; font-weight:normal }\12.target { }\12.timestamp { color: #bebebe; }\12.timestamp-kwd { color: #5f9ea0; }\12.right  {margin-left:auto; margin-right:0px;  text-align:right;}\12.left   {margin-left:0px;  margin-right:auto; text-align:left;}\12.center {margin-left:auto; margin-right:auto; text-align:center;}\12p.verse { margin-left: 3% }\12pre {\12border: 1pt solid #AEBDCC;\12background-color: #F3F5F7;\12padding: 5pt;\12font-family: courier, monospace;\12font-size: 90%;\12overflow:auto;\12}\12table { border-collapse: collapse; }\12td, th { vertical-align: top;  }\12th.right  { text-align:center;  }\12th.left   { text-align:center;   }\12th.center { text-align:center; }\12td.right  { text-align:right;  }\12td.left   { text-align:left;   }\12td.center { text-align:center; }\12dt { font-weight: bold; }\12div.figure { padding: 0.5em; }\12div.figure p { text-align: center; }\12div.inlinetask {\12padding:10px;\12border:2px solid gray;\12margin:10px;\12background: #ffffcc;\12}\12textarea { overflow-x: auto; }\12.linenr { font-size:smaller }\12.code-highlighted {background-color:#ffff00;}\12</style>")
  '(org-export-html-style-include-default nil)
  '(org-export-preserve-breaks t)
  '(org-export-with-broken-links 'mark)
@@ -282,7 +305,22 @@ textarea { overflow-x: auto; }
    '(google-translate flyparens flylisp forge deft grip-mode emojify nov yo-moma exec-path-from-shell ess rainbow-blocks pdf-tools magit eyebrowse frames-only-mode slime cider yaml-mode workgroups2 w3m unicode-fonts twittering-mode ttl-mode sparql-mode smart-mode-line scala-mode2 save-visited-files rspec-mode rainbow-delimiters pivotal-tracker pig-mode markdown-mode link less-css-mode json-mode js2-mode htmlize helm-open-github helm-itunes groovy-mode gradle-mode fringe-helper eruby-mode dired-toggle-sudo dash-at-point connection color-theme cider-decompile bpe apples-mode ample-theme ack ac-nrepl ac-cider 2048-game))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-values
-   '((eval require 'org-roam-dev)
+   '((vc-prepare-patches-separately)
+     (diff-add-log-use-relative-names . t)
+     (vc-git-annotate-switches . "-w")
+     (elisp-lint-indent-specs
+      (describe . 1)
+      (it . 1)
+      (org-element-map . defun)
+      (org-roam-dolist-with-progress . 2)
+      (org-roam-with-temp-buffer . 1)
+      (org-with-point-at . 1)
+      (magit-insert-section . defun)
+      (magit-section-case . 0)
+      (org-roam-with-file . 2))
+     (elisp-lint-ignored-validators "byte-compile" "package-lint")
+     (Package . AMBR-core)
+     (eval require 'org-roam-dev)
      (org-src-preserve-indentation)
      (eval and
 	   (require 'ox-extra nil t)
@@ -317,10 +355,10 @@ textarea { overflow-x: auto; }
      (magit-todos-exclude-globs "alzabo/pret/*")
      (Package . biolisp)
      (Package . ODD-STREAMS)
-     (package . net\.aserve\.test)
+     (package . net.aserve.test)
      (bug-reference-bug-regexp . "#\\(?2:[[:digit:]]+\\)")
-     (package . net\.html\.generator)
-     (package . net\.aserve\.client)
+     (package . net.html.generator)
+     (package . net.aserve.client)
      (eval define-clojure-indent
 	   (phase-context 2)
 	   (defmethod-plan 2))
@@ -354,7 +392,7 @@ textarea { overflow-x: auto; }
      (Base . 10)
      (Package . DRAKMA)
      (Syntax . COMMON-LISP)
-     (package . net\.aserve)
+     (package . net.aserve)
      (Package . CCL)
      (encoding . utf-8)))
  '(send-mail-function 'smtpmail-send-it)
@@ -399,69 +437,35 @@ textarea { overflow-x: auto; }
  '(variable-pitch ((t (:height 1.2 :width normal :family "Gill Sans")))))
 
 
-(defun link-region-2
-    (&optional arg)
-  (interactive "p")
-  (or arg
-      (setq arg 1))
-  (dotimes
-      (i arg)
-    (call-kbd-macro
-     [24 24 91 2 91 escape 120 121 97 110 107 45 99 104 114 117 109 backspace backspace 111 109 101 45 117 114 108 return 24 24 24 24 6 134217730 67108896 134217734 134217734 91 134217734 134217734 134217734])))
-(defun link-selection-3
-    (&optional arg)
-  (interactive "p")
-  (or arg
-      (setq arg 1))
-  (dotimes
-      (i arg)
-    (call-kbd-macro
-     [24 24 91 2 91 escape 120 121 97 110 107 45 99 104 114 111 109 101 45 117 114 108 return 6 134217730 91 4 134217734 134217734 93])))
 
-(defun blockquotify
-    (&optional arg)
-  (interactive "p")
-  (or arg
-      (setq arg 1))
-  (dotimes
-      (i arg)
-    (call-kbd-macro
-     [134217848 115 101 97 114 99 104 32 102 111 32 return 62 62 62 32 backspace return 6 backspace backspace 60 98 108 111 99 107 113 117 111 101 backspace 116 101 62 5 60 47 98 108 111 99 107 113 117 111 116 101 62])))
-
-;;; API keys etc 
+;; ;;; API keys etc 
 (require 'mt-secrets)
-
-;;; For Rawsugar
-
-(defun start-datomic ()
-  (interactive)
-  (startup-shell "*datomic-transactor*" "." "~/Downloads/datomic-pro-0.9.5951/bin/transactor ~/pici/repos/rawsugar/credentials/dev-transactor.properties")
-  (startup-shell "*datomic-peer*" "." "~/Downloads/datomic-pro-0.9.5951/bin/run -m datomic.peer-server -h localhost -p 8998 -a myaccesskey,mysecret -d rawsugar-test,datomic:dev://localhost:4334/rawsugar-test"))
-
-
 
 ;;; Was causing problems, turn this on a bit at a time.
 ;(add-hook 'clojure-mode-hook #'my-clojure-mode-hook)
 
-(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+;; (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 
-;;; Definitely don't want this in code/shell, and probably don't want it at all. 
-;(add-hook 'after-init-hook #'global-emojify-mode)
+;; ;;; Definitely don't want this in code/shell, and probably don't want it at all. 
+;; ;(add-hook 'after-init-hook #'global-emojify-mode)
 
 (add-to-list 'auto-mode-alist '("\\.ino" . c-mode)) ;Arduino
 
-(with-eval-after-load 'magit
-  (require 'forge))
+;; ;; What was this for?
+; '(with-eval-after-load 'magit
+;;   (require 'forge))
 
-;;; Problem: load-history gets corrupted with an entry whose car is not a string
-;;; ((require . info) ... )
-;;; Can't figure out why, so this hack.
-(defun clean-load-history ()
-  (setq load-history
-	(remove-if-not #'(lambda (x) (stringp (car x))) load-history)))
+;; ;;; Problem: load-history gets corrupted with an entry whose car is not a string
+;; ;;; ((require . info) ... )
+;; ;;; Can't figure out why, so this hack.
+;; (defun clean-load-history ()
+;;   (setq load-history
+;; 	(remove-if-not #'(lambda (x) (stringp (car x))) load-history)))
 
-;;; WHICH STILL DOES NOT SOLVE THE FUCKING PROBLEM!
-;;; Because corruption happens AFTER .emacs, so need to run this by hand later
-'(clean-load-history)
+;; ;;; WHICH STILL DOES NOT SOLVE THE FUCKING PROBLEM!
+;; ;;; Because corruption happens AFTER .emacs, so need to run this by hand later
+;; '(clean-load-history)
 
 
+;; ;;; TODO Make sure magit-mode-hook does not have forge-bug-reference-setup
+;; ;;; Not sure where that is happening but it breaks everything

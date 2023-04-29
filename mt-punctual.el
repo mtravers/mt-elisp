@@ -5,7 +5,8 @@
 ;;; See http://stackoverflow.com/questions/18620187/how-can-i-revert-fancy-lambdas-after-an-edit
 
 (defvar punctuals 
-  '(("--" "–")
+  '(("==" "≡")
+    ("--" "–")
     ("---" "—")
     ("-->" "→")
     ("<--" "←")

@@ -103,6 +103,13 @@ end tell")
 
 ;;; ◇⟐◈ Decorativeness ◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐◈◆◈⟐◇⟐
 
+;;; Found here, very useful: http://ergoemacs.org/emacs/elisp_idioms_batch.html
+(defun read-lines (fPath)
+  "Return a list of lines of a file at FPATH."
+  (with-temp-buffer
+    (insert-file-contents fPath)
+    (split-string (buffer-string) "\n" t)))
+
 (defvar border-file (concat mt-elisp-directory "data/borders.txt"))
 
 ;;; TODO this should be per-buffer
@@ -400,6 +407,26 @@ Null prefix argument turns off the mode."
 (defun all-package-dependencies ()
   (mapcar #'package-dependencies
 	  (mapcar #'car package-alist)))
+
+;;; This function partly written by ChatGPT!
+;;; TODO should kill dired and shell buffers as well
+;;; (with-current-buffer b-dir (dired-current-directory))
+(defun buffer-directory (buffer)
+  (expand-file-name (with-current-buffer buffer default-directory)))
+
+(defun kill-all-buffers-in-directory (directory)
+  "Kill all buffers that are visiting a file in DIRECTORY."
+  (interactive "DDirectory: ")
+  (let* ((directory (expand-file-name directory))
+	(buffers (cl-remove-if-not (lambda (buffer)
+				     (and (buffer-directory buffer)
+					  (string-prefix-p directory (buffer-directory buffer))))
+				   (buffer-list))))
+    (dolist (buffer buffers)
+      (kill-buffer buffer))
+    (print `(,(length buffers) killed))
+    ))
+
 
 
 (provide 'mt-el-hacks)
