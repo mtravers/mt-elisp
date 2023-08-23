@@ -33,7 +33,9 @@
 
 (use-package magit)
 
-;; Requires brew install rg, and some customization is needed esp with npm-based projects
+;; Requires brew install rg,
+;; Requires some customization esp with npm-based projects
+;; TODO magit-todos-branch-list-merge-base-ref has to be the right one of main or master, not sure how to do that
 (use-package magit-todos)
 (magit-todos-mode)
 
@@ -56,6 +58,10 @@
   (git-link (git-link--remote) nil nil)
   (let ((url (current-kill 0)))
     (browse-url url)))
+
+;;; Speaking of Logseq
+(require 'logseq-hacks)
+
 
 ;;; I think this is doing all this unnecessary reubuilding? Anyway, off for now, see what happens
 '(use-package forge
@@ -82,6 +88,8 @@
 ;; ;;; Requires  M-x pdf-tools-install (once per installation)
 (use-package pdf-tools)
 
+(add-to-list 'auto-mode-alist '("\\.pdf$" . pdf-view-mode))
+
 ;; ;;; ☒□ Clojure □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (require 'mt-cider-new)
@@ -95,9 +103,10 @@
 ;; ;; (auto-compile-on-load-mode)
 ;; ;; (auto-compile-on-save-mode)
 
-;; (require 'mt-slime)
+(require 'mt-slime)
 (require 'mt-el-hacks)
-(require 'mt-mac-hacks)			;TODO conditionalize
+;;; TODO apples-mode is broken and this won't load, so it is diked
+;;;(require 'mt-mac-hacks)			;TODO conditionalize
 (require 'mt-punctual)
 ;; (require 'mt-inversions)
 ;; (require 'mt-ucs)
@@ -168,9 +177,9 @@
 ;; ;;; Bell controls:
 ;; (setq visible-bell nil)
 ;; ;;; Flash modeline instead of a beep
-;; (setq ring-bell-function (lambda ()
-;; 			   (invert-face 'mode-line)
-;; 			   (run-with-timer 0.1 nil 'invert-face 'mode-line)))
+(setq ring-bell-function (lambda ()
+ 			   (invert-face 'mode-line)
+ 			   (run-with-timer 0.1 nil 'invert-face 'mode-line)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -244,7 +253,9 @@ mouse-3: Remove current window from display")))))))
 
 ;;; ☒□ Shell □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-(add-hook 'shell-mode-hook (lambda () (set-buffer-process-coding-system 'mule-utf-8 'mule-utf-8)))
+(add-hook 'shell-mode-hook
+	  (lambda ()
+	    (set-buffer-process-coding-system 'mule-utf-8 'mule-utf-8)))
 
 ;;; Trying out vterm - didn't past cost/benefit test, sorry
 ;;; (use-package vterm)
@@ -393,6 +404,11 @@ mouse-3: Remove current window from display")))))))
 ;;; Apparently this just works? Above unnecessary?
 (add-to-list 'auto-mode-alist '("\\.tsx$" . tsx-ts-mode))
 
+;; ;;; ☒□ Terraform  □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+(use-package terraform-mode)
+
+
 ;; ;;; ☒□ Misc language support  □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (add-to-list 'auto-mode-alist '("\\.m$" . octave-mode))
@@ -416,6 +432,11 @@ mouse-3: Remove current window from display")))))))
 (defun shell-clear-buffer ()
   (interactive)
   (comint-clear-buffer))
+
+
+;; Annotation, provisional
+(use-package annotate)
+(annotate-mode)
 
 
 

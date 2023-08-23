@@ -428,6 +428,18 @@ Null prefix argument turns off the mode."
     ))
 
 
+;;;; Also a ChatGPT product
+(defun clear-shell-and-execute-last-command ()
+  "Clears the shell window and executes the last command."
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer))
+  (comint-previous-input 1)		;TODO Doesn't do quite the right thing, can we get history?
+  (comint-send-input))
+
+(add-hook 'shell-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-c C-r") 'clear-shell-and-execute-last-command)))
 
 (provide 'mt-el-hacks)
 

@@ -1,6 +1,7 @@
 ;;; -*- encoding : utf-8; lexical-binding: t -*-
 
 ;;; Mac-specific hacks, many relying on Applescript
+;;; TODO apples-mode is broken and this won't load, so it is diked
 
 (use-package apples-mode)
 

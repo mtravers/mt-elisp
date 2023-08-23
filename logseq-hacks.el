@@ -59,10 +59,13 @@
 (defun logseq-url (graph page)
   (format "logseq://graph/%s?page=%s" graph (url-encode-url page)))
 
+;;; Semi working
 (defun open-in-logseq ()
   (interactive)
-  (let* ((logseq-page (logseq-page)))
-    (when logseq-page
-      (browse-url (logseq-url (car logseq-page) (cadr logseq-page))))))
+  (let* ((logseq-page (logseq-page))
+	 (logseq-url (and logseq-page (logseq-url (car logseq-page) (cadr logseq-page)))))
+    (when logseq-url
+      (message ())
+      (browse-url ))))
 
 (provide 'logseq-hacks)
