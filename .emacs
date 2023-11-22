@@ -109,7 +109,6 @@
  '(backup-directory-alist '((".*" . "~/.saves") ("" . "")))
  '(cider-cljs-lein-repl
    "(do (require 'figwheel-sidecar.repl-api) (figwheel-sidecar.repl-api/start-figwheel!) (figwheel-sidecar.repl-api/cljs-repl))")
- '(cider-lein-command "/opt/homebrew/bin/lein")
  '(cider-prompt-for-symbol nil)
  '(cider-repl-history-file "~/.emacs.d/cider-repl-history")
  '(cider-repl-use-pretty-printing t)

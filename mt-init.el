@@ -220,9 +220,14 @@ mouse-3: Remove current window from display")))))))
 ;;; ☒□ Themes □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (when window-system
-  (add-to-list 'custom-theme-load-path "/opt/mt/repos/emacs-color-theme-solarized/")
-  (load-theme 'solarized t)
-  (setq darkness nil))
+
+  ; TODO nice to get this one working again
+  ; (add-to-list 'custom-theme-load-path "/opt/mt/repos/emacs-color-theme-solarized/")
+  ; (load-theme 'solarized t)
+
+  (use-package zenburn-theme)
+  (load-theme 'zenburn t)
+ )
 
 ;; (defun invert-theme ()
 ;;   (interactive)
@@ -230,7 +235,6 @@ mouse-3: Remove current window from display")))))))
 ;;   (enable-theme 'solarized)
 ;;   (setf darkness (not darkness)))
 
-(use-package zenburn-theme)
 
 ;;; ☒□ Fonts and Unicode □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
