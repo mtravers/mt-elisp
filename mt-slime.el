@@ -42,7 +42,7 @@
 		)
 	(mcl ("/opt/reposed/ccl/dx86cl64")
 	     :env ("CCL_DEFAULT_DIRECTORY=/misc/reposed/ccl"))
-	(sbcl ("/opt/homebrew/bin/sbcl"))
+	(sbcl ("/usr/local/bin/sbcl"))
 	))
 
 

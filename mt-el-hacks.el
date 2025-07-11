@@ -271,8 +271,9 @@ Null prefix argument turns off the mode."
 
 ;;; Has a dependency on magit, but I expect to always have that loaded.
 ;;; See also M-x projectile-run-shell
+;;; TODO should be an option to use existing buffer if possible (customization and/or prefix). Or cycle through them I guess. It's a real pain currently.
 (defun schnell ()
-  "Like shell but picks more intelligent buffer names, knows about git repos and will use toplevel if available"
+  "Like shell but picks more intelligent buffer names, knows about git repos and will go to top-level directory if available"
   (interactive)
   (let* ((default-directory (or (magit-toplevel default-directory)
 				default-directory))
@@ -282,6 +283,7 @@ Null prefix argument turns off the mode."
 ;;; source: https://emacs.stackexchange.com/questions/12121/org-mode-parsing-rich-html-directly-when-pasting
 ;;; Requires osascript (pre-installed on macs?) and pandoc (brew)
 ;;; Here rather than mt-mac-hacks.el because it might work on other platforms.
+;;; not that relevant now that I use Logseq
 
 ;;; TODO Pandoc introduces spurious _, haven't figured out how to fix that.
 ;;; TODO dies if selection contains image, generally could be less fragile
@@ -440,6 +442,73 @@ Null prefix argument turns off the mode."
 (add-hook 'shell-mode-hook
 	  (lambda ()
 	    (local-set-key (kbd "C-c C-r") 'clear-shell-and-execute-last-command)))
+
+;;; Formerly mt-ucs/ucs-insert-matching
+(defun insert-chars-matching (pattern &optional word?)
+  "Insert Unicode chars whose name matches PATTERN. A prefix arg means verbose (each char is on its own line with name)"
+  (interactive "sPattern:")
+  (if word? (setf pattern (format "\\<%s\\>" pattern)))
+  (maphash #'(lambda (name char)
+	       (when (string-match pattern name)
+		 (insert-char char)
+		 (when current-prefix-arg
+		   (insert-tab)
+		   (insert name)
+		   (insert ?\n))))
+	   (ucs-names)))
+
+
+
+;;; ChatGPT generated
+;;; TODO doesn't really work, makes a logarythmic shrinking windows....
+;;; There should be an underlying split-windows function that does the right thing
+(defun tile-buffers-matching-string (match-string)
+  "Tile all buffers whose name matches MATCH-STRING."
+  (interactive "sEnter string to match buffer names: ")
+  (let ((buffers (buffer-list))
+        (matching-buffers '()))
+    ;; Collect matching buffers
+    (dolist (buffer buffers)
+      (when (string-match match-string (buffer-name buffer))
+        (push buffer matching-buffers)))
+    ;; Split and display each matching buffer
+    (when matching-buffers
+      (delete-other-windows) ;; Start with a single window
+      (let ((num-windows (length matching-buffers))
+            (split-fn 'split-window-below))
+        ;; Split and show first buffer
+        (switch-to-buffer (pop matching-buffers))
+        ;; Split and display remaining buffers
+        (while matching-buffers
+          (funcall split-fn) ;; Split window
+          (other-window 1) ;; Move to the new window
+          (switch-to-buffer (pop matching-buffers))) ;; Show next buffer
+	)
+      ;; Balance windows (TODO works if called by hand afterwards, but not here. Redisplay issue?)
+      ;doesnt help (redisplay t)
+      (balance-windows))))
+
+
+;;; Seriously I need to write this?
+(defun string-starts-with (str prefix)
+  "Check if STR starts with PREFIX."
+  (and (>= (length str) (length prefix))
+       (string-equal (substring str 0 (length prefix)) prefix)))
+
+;;; Idea is to list all shell buffers WITH THEIR FIRST OR LAST COMMAND. First part done!
+;;; Buffer list cols defined here: /Applications/Emacs 2.app/Contents/Resources/lisp/buff-menu.el.gz
+;;; but no appetite or time for figuring that out right now.
+(defun list-shell-buffers ()
+  (interactive)
+  (display-buffer (list-buffers-noselect nil nil (lambda (x) (string-starts-with (buffer-name x) "*shell")))))
+
+;;; Just a synonym for find-file-literally
+(defun find-file-fundamental (filename)
+  "Open a file in Fundamental mode, bypassing mode autodetection."
+  (interactive "FFind file in Fundamental mode: ")
+  (find-file-literally filename))
+
+(global-set-key (kbd "C-c f") 'find-file-fundamental)
 
 (provide 'mt-el-hacks)
 

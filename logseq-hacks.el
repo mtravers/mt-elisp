@@ -43,6 +43,14 @@
 ;;; When visiting a Logseq file in Emacs, this will open it in Logseq.
 ;;; TODO doesn't work for journal pages, they use title:
 
+(defun open-in-logseq ()
+  (interactive)
+  (let* ((logseq-page (logseq-page))
+	 (logseq-url (and logseq-page (logseq-url (car logseq-page) (cadr logseq-page)))))
+    (when logseq-url
+      (message ())
+      (browse-url logseq-url))))
+
 (defun logseq-page ()
   ;;; TODO verify that this is indeed a logseq file
   ;;; Returns (graph page-name) pair
@@ -59,13 +67,6 @@
 (defun logseq-url (graph page)
   (format "logseq://graph/%s?page=%s" graph (url-encode-url page)))
 
-;;; Semi working
-(defun open-in-logseq ()
-  (interactive)
-  (let* ((logseq-page (logseq-page))
-	 (logseq-url (and logseq-page (logseq-url (car logseq-page) (cadr logseq-page)))))
-    (when logseq-url
-      (message ())
-      (browse-url ))))
+
 
 (provide 'logseq-hacks)

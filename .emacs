@@ -14,6 +14,8 @@
 ;;      (unless (every #'stringp (mapcar #'car load-history))
 ;;        (message (prin1-to-string (list :FUCKED (length load-history) foo (first load-history)))))))
 
+; (setq debug-on-error t)
+
 ;;; Going Straight
 
 (let ((bootstrap-file
@@ -56,7 +58,7 @@
 ;; '(use-package org-roam
 ;;       :after org
 ;; ;;; this adds org-roam-mode to all buffers? Not what I want
-;; ;      :hook 
+;; ;      :hook
 ;; ;      (after-init . org-roam-mode)
 ;; ;      :straight (:host github :repo "jethrokuan/org-roam" :branch "develop")
 ;;       :custom
@@ -109,7 +111,7 @@
  '(backup-directory-alist '((".*" . "~/.saves") ("" . "")))
  '(cider-cljs-lein-repl
    "(do (require 'figwheel-sidecar.repl-api) (figwheel-sidecar.repl-api/start-figwheel!) (figwheel-sidecar.repl-api/cljs-repl))")
- '(cider-lein-command "/opt/homebrew/bin/lein")
+ '(cider-jack-in-default 'lein)
  '(cider-prompt-for-symbol nil)
  '(cider-repl-history-file "~/.emacs.d/cider-repl-history")
  '(cider-repl-use-pretty-printing t)
@@ -201,7 +203,7 @@
  '(css-indent-offset 2)
  '(custom-enabled-themes '(zenburn))
  '(custom-safe-themes
-   '("28a34dd458a554d34de989e251dc965e3dc72bace7d096cdc29249d60f395a82" "ea5822c1b2fb8bb6194a7ee61af3fe2cc7e2c7bab272cbb498a0234984e1b2d9" "0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
+   '("9fb561389e5ac5b9ead13a24fb4c2a3544910f67f12cfcfe77b75f36248017d0" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "28a34dd458a554d34de989e251dc965e3dc72bace7d096cdc29249d60f395a82" "ea5822c1b2fb8bb6194a7ee61af3fe2cc7e2c7bab272cbb498a0234984e1b2d9" "0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
  '(deft-default-extension "org" t)
  '(deft-directory "/opt/mt/working/org-roam/files" t)
  '(deft-recursive t t)
@@ -212,22 +214,24 @@
  '(desktop-save-mode t)
  '(dired-free-space nil)
  '(dired-kept-versions 3)
+ '(dired-show-readme-regexp "^README\\|^readme\\|^notes\\.org")
  '(display-line-numbers nil)
  '(electric-pair-mode t)
  '(electric-pair-skip-self t)
  '(exec-path
-   '("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin" nil "/usr/local/bin"))
+   '("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin" nil "/usr/local/bin" "/opt/homebrew/bin/"))
  '(explicit-shell-file-name "bash")
  '(fci-rule-color "#383838")
  '(file-precious-flag t)
  '(fill-column 100)
  '(flycheck-clj-kondo-clj-executable "/usr/local/bin/clj-kondo")
  '(git-commit-summary-max-length 120)
+ '(git-link-open-in-browser t)
  '(global-auto-revert-ignore-modes '(archive-mode))
  '(global-auto-revert-mode t)
  '(global-display-line-numbers-mode nil)
  '(grep-find-ignored-directories
-   '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "logs" "log" "node_modules"))
+   '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "logs" "log"))
  '(grep-save-buffers nil)
  '(ibuffer-formats
    '((mark modified read-only " "
@@ -245,7 +249,8 @@
  '(line-move-visual t)
  '(magit-todos-branch-list t)
  '(magit-todos-branch-list-merge-base-ref "main")
- '(magit-todos-exclude-globs '("/resources/*" "/node_modules/*" "search_index.js"))
+ '(magit-todos-exclude-globs
+   '("/resources/*" "/node_modules/*" "search_index.js" "*.json"))
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(magit-todos-keyword-suffix ":?")
  '(magit-todos-keywords '("TODO" "TEMP" "OBSO" "IDEA" "NOTE"))
@@ -260,7 +265,7 @@
 	    (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
 	#("-" 0 1
 	  (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole fr ame\12mouse-3: Remove current window from display"))))
-     mode-line-mule-info mode-line-client mode-line-modified mode-line-auto-compile mode-line-remote mode-line-frame-identification mode-line-buffer-identification
+     mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification
      #("   " 0 3
        (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
      mode-line-position
@@ -299,45 +304,17 @@
  '(org-export-html-style-include-default nil)
  '(org-export-preserve-breaks t)
  '(org-export-with-broken-links 'mark)
- '(org-modules
-   '(org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-special-blocks))
  '(org-roam-directory "/opt/mt/working/org-roam/files")
  '(org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox")
  '(org-timer-default-timer "5")
  '(package-selected-packages
    '(google-translate flyparens flylisp forge deft grip-mode emojify nov yo-moma exec-path-from-shell ess rainbow-blocks pdf-tools magit eyebrowse frames-only-mode slime cider yaml-mode workgroups2 w3m unicode-fonts twittering-mode ttl-mode sparql-mode smart-mode-line scala-mode2 save-visited-files rspec-mode rainbow-delimiters pivotal-tracker pig-mode markdown-mode link less-css-mode json-mode js2-mode htmlize helm-open-github helm-itunes groovy-mode gradle-mode fringe-helper eruby-mode dired-toggle-sudo dash-at-point connection color-theme cider-decompile bpe apples-mode ample-theme ack ac-nrepl ac-cider 2048-game))
+ '(package-vc-selected-packages
+   '((robby :vc-backend Git :url "https://github.com/stevemolitor/robby")))
+ '(pdf-info-epdfinfo-program "~/.emacs.d/straight/repos/pdf-tools/server/epdfinfo")
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-values
-   '((cider-shadow-cljs-default-options . "app")
-     (vc-prepare-patches-separately)
-     (diff-add-log-use-relative-names . t)
-     (vc-git-annotate-switches . "-w")
-     (elisp-lint-indent-specs
-      (describe . 1)
-      (it . 1)
-      (org-element-map . defun)
-      (org-roam-dolist-with-progress . 2)
-      (org-roam-with-temp-buffer . 1)
-      (org-with-point-at . 1)
-      (magit-insert-section . defun)
-      (magit-section-case . 0)
-      (org-roam-with-file . 2))
-     (elisp-lint-ignored-validators "byte-compile" "package-lint")
-     (Package . AMBR-core)
-     (eval require 'org-roam-dev)
-     (org-src-preserve-indentation)
-     (eval and
-	   (require 'ox-extra nil t)
-	   (ox-extras-activate
-	    '(ignore-headlines)))
-     (eval require 'ox-texinfo+ nil t)
-     (eval require 'org-man nil t)
-     (eval add-hook 'after-save-hook 'org-html-export-to-html t t)
-     (magit-todos-exclude-globs "index.js")
-     (Default-character-style :SWISS :ROMAN :NORMAL)
-     (Package . COMMON-LISP-USER)
-     (Package . GEOMETRY)
-     (cider-default-cljs-repl quote figwheel-main)
+   '((eval add-hook 'after-save-hook 'org-html-export-to-html t t)
      (elisp-lint-indent-specs
       (if-let* . 2)
       (when-let* . 1)
@@ -353,45 +330,11 @@
       (insert-rect . defun)
       (cl-defun . 2)
       (with-parsed-tramp-file-name . 2)
-      (thread-first . 1)
-      (thread-last . 1))
+      (thread-first . 0)
+      (thread-last . 0)
+      (transient-define-prefix . defmacro)
+      (transient-define-suffix . defmacro))
      (checkdoc-package-keywords-flag)
-     (magit-todos-exclude-globs "alzabo/pret/*")
-     (Package . biolisp)
-     (Package . ODD-STREAMS)
-     (package . net.aserve.test)
-     (bug-reference-bug-regexp . "#\\(?2:[[:digit:]]+\\)")
-     (package . net.html.generator)
-     (package . net.aserve.client)
-     (eval define-clojure-indent
-	   (phase-context 2)
-	   (defmethod-plan 2))
-     (eval define-clojure-indent
-	   (def-collect-plan-fn 'defun))
-     (eval define-clojure-indent
-	   (defplan 'defun)
-	   (def-aggregate-plan-fn 'defun))
-     (prompt-to-byte-compile)
-     (eval define-clojure-indent
-	   (codepoint-case 'defun))
-     (Package . FLEXI-STREAMS)
-     (Package . CHUNGA)
-     (Lowercase . Yes)
-     (Package . XLIB)
-     (Package . cl-user)
-     (Package . HUNCHENTOOT)
-     (readtable . xml)
-     (package . cl-user)
-     (Package . CL-INTERPOL)
-     (Lowercase . T)
-     (Package ANSI-LOOP "COMMON-LISP")
-     (Syntax . Common-lisp)
-     (Syntax . Common-Lisp)
-     (Package . CL-USER)
-     (Package . utils)
-     (Syntax . ANSI-Common-Lisp)
-     (TeX-master . "asp")
-     (TeX-PDF-mode . t)
      (Package . CL-PPCRE)
      (Base . 10)
      (Package . DRAKMA)
@@ -406,6 +349,7 @@
  '(smtpmail-smtp-service 587)
  '(tool-bar-mode nil)
  '(tramp-default-method "scpx")
+ '(typescript-indent-level 2)
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    '((20 . "#BC8383")
@@ -429,7 +373,20 @@
  '(vc-annotate-very-old-color "#DC8CC3")
  '(vc-follow-symlinks t)
  '(vc-hg-program "/usr/local/bin/hg")
- '(version-control t))
+ '(version-control t)
+ '(warning-suppress-log-types
+   '(((undo discard-info))
+     ((undo discard-info))
+     ((undo discard-info))
+     ((undo discard-info))
+     ((undo discard-info))
+     ((undo discard-info))))
+ '(warning-suppress-types
+   '(((undo discard-info))
+     ((undo discard-info))
+     ((undo discard-info))
+     ((undo discard-info))
+     ((undo discard-info)))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -437,8 +394,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 160 :width normal :foundry "nil" :family "Menlo"))))
- '(fixed-pitch ((t (:family "Dejavu Sans Mono"))))
- '(variable-pitch ((t (:height 1.2 :width normal :family "Gill Sans")))))
+ '(ansi-color-slow-blink ((t (:box nil :underline (:color "pink" :style wave)))))
+ ;; Borked in MacOS Sequoia?
+ ;; '(fixed-pitch ((t (:family "Dejavu Sans Mono"))))
+ ;; '(variable-pitch ((t (:height 1.2 :width normal :family "Gill Sans"))))
+ )
 
 
 
@@ -473,3 +433,4 @@
 
 ;; ;;; TODO Make sure magit-mode-hook does not have forge-bug-reference-setup
 ;; ;;; Not sure where that is happening but it breaks everything
+(put 'downcase-region 'disabled nil)

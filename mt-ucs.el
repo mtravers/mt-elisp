@@ -12,19 +12,24 @@
 ;;; Haven't used this yet but it looks like fun
 ;;; https://github.com/Codepoints/awesome-codepoints
 
+;;; TODO no longer works due to emacs changes, ucs-insert has gone.
+
+
+;;; Redundant, there is built-in describe-char
 (defun desc-char (pos)
   (interactive "d")
   (let* ((char (char-after pos))
 	 (name (get-char-code-property char 'name)))
     (prin1 name)))
 
+;;; Moved to mt-el-hacks
 (defun ucs-insert-matching (pattern &optional word?)
   "Insert Unicode chars whose name matches PATTERN. A prefix arg means verbose (each char is on its own line with name)"
   (interactive "sPattern:")
   (if word? (setf pattern (format "\\<%s\\>" pattern)))
   (maphash #'(lambda (name char)
 	       (when (string-match pattern name)
-		 (ucs-insert char)
+		 (insert-char char)
 		 (when current-prefix-arg
 		   (insert-tab)
 		   (insert name)

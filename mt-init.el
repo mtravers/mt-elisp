@@ -51,13 +51,8 @@
 	(text (buffer-name)))
     (kill-new (format "[%s](%s)" text url))))
 
-;;; Like M-x git-link but will actually open the url in browser
-;;; See also git-link-open-in-browser but binding it doesn't work
-(defun git-link-open ()
-  (interactive)
-  (git-link (git-link--remote) nil nil)
-  (let ((url (current-kill 0)))
-    (browse-url url)))
+;;; Better with git-link-open-in-browser to t 
+
 
 ;;; Speaking of Logseq
 (require 'logseq-hacks)
@@ -83,6 +78,19 @@
 ;; ;;  '(magit-todos-keywords (quote ("TODO" "HHH")))
 ;; ;; (custom-set-variables  '(magit-todos-keywords (quote ("TODO" "TEMP" "HHH" "OBSO"))))
 
+;; ;;; ☒□ DIRED □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+
+;;; See mt-hacks
+
+;;; Show READMEs, via a weird Pandoc trick. Customized to also show notes.org, might be other common ones.
+;;; TODO does a bad job on links in .md files, might be worth fixing
+(straight-use-package
+ '(dired-show-readme
+   :host gitlab
+   :repo "kisaragi-hiu/dired-show-readme"))
+
+(add-hook 'dired-mode-hook #'dired-show-readme-mode)
+
 ;; ;;; ☒□ PDFs □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 ;; ;;; Requires  M-x pdf-tools-install (once per installation)
@@ -94,7 +102,6 @@
 
 (require 'mt-cider-new)
 
-
 ;; (setq load-prefer-newer t)
 
 ;; ;;; autocompile
@@ -102,6 +109,8 @@
 ;; ;; (require 'auto-compile)
 ;; ;; (auto-compile-on-load-mode)
 ;; ;; (auto-compile-on-save-mode)
+
+;; ;;; ☒□ Common Lisp □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
 (require 'mt-slime)
 (require 'mt-el-hacks)
@@ -121,16 +130,15 @@
 (use-package yaml-mode)
 ;; (use-package svg)
 
-;; ;;; ☒□ R □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+;;; ☒□ R □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-;; ;;; Seems broken in a way that bricks Emacs. Look into it if I have to do R ever again
-;; ;;; (use-package ess)
+(use-package ess)
 
-;; ;;; ☒□ Customizations □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
+;;; ☒□ Customizations □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-;; ;;; Enable alt-control-arrowkeys for moving between panes
-;; ;;; Should work but doesn't
-;; ;;; (windmove-default-keybindings '(meta control))
+;;; Enable alt-control-arrowkeys for moving between panes
+;;; Should work but doesn't
+;;; (windmove-default-keybindings '(meta control))
 ;; (global-set-key (vector (list 'meta 'control 'down)) 'windmove-down)
 ;; (global-set-key (vector (list 'meta 'control 'up)) 'windmove-up)
 ;; (global-set-key (vector (list 'meta 'control 'left)) 'windmove-left)
@@ -209,7 +217,6 @@ mouse-3: Remove current window from display")))))))
  '(ns-alternate-modifier (quote none))
  '(ns-command-modifier (quote meta))
  '(org-export-preserve-breaks t)
- '(org-modules (quote (org-bbdb org-bibtex org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m org-special-blocks)))
  '(safe-local-variable-values (quote ((Package . CL-PPCRE) (Base . 10) (Package . DRAKMA) (Syntax . COMMON-LISP) (package . net\.aserve) (Package . CCL) (encoding . utf-8))))
  '(send-mail-function (quote smtpmail-send-it))
  '(smtpmail-smtp-server "smtp.gmail.com")
@@ -240,9 +247,11 @@ mouse-3: Remove current window from display")))))))
 
 (add-hook 'text-mode-hook (lambda () (variable-pitch-mode t))) ;+++ unfortunately this turns it on for html
 (add-hook 'eww-mode-hook (lambda () (variable-pitch-mode t)))
-(add-hook 'org-mode-hook
-	  (lambda ()
-	    (variable-pitch-mode t)))
+
+;;; temp out
+;; (add-hook 'org-mode-hook
+;; 	  (lambda ()
+;; 	    (variable-pitch-mode t))))
 
 ;;; Wrap text and org
 
@@ -439,6 +448,63 @@ mouse-3: Remove current window from display")))))))
 (annotate-mode)
 
 
+;;; From Cat I Farted and not verified
+(defun set-project-background-color (color)
+  "Set the background color for the current project."
+  (interactive "sEnter background color (e.g., #ffffff): ")
+  (let ((dir-locals-file (concat (locate-dominating-file default-directory ".dir-locals.el")
+                                 ".dir-locals.el")))
+    (with-temp-file dir-locals-file
+      (insert (format "((nil . ((eval . (set-face-background 'default \"%s\")))))" color)))
+    (message "Background color set for project: %s" color)))
+
+
+;;; See https://github.com/copilot-emacs/copilot.el
+(defun copilot ()
+  (interactive)
+  (use-package editorconfig)
+  (use-package jsonrpc)
+  ;(load "/opt/reposed/copilot.el/copilot-balancer.el")
+  ;(load "/opt/reposed/copilot.el/copilot.el")
+  (use-package copilot
+    :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+    :ensure t)
+  (add-hook 'prog-mode-hook 'copilot-mode)
+  (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+  (copilot-login))
+
+; (copilot)
+
+;;; Neither fo these are working, argh
+
+;;; ChatGPT https://github.com/emacs-openai/chatgpt
+;;; the use-package for this is fucked for some reason
+;;; not clear this works
+;;; TODO for fucks sake use var-pitch font
+(defun chatgpt ()
+  (interactive)
+  (add-to-list 'load-path "/opt/reposed/openai")
+  (use-package request)
+  (use-package tblui)
+  (load "/opt/reposed/chatgpt/chatgpt.el")
+  (setq openai-key (getenv "OPENAI_API_KEY"))
+  )
+
+;;; ChatGPT
+
+;;; TODO need to install openai package, argh
+'(use-package chatgpt
+  :straight (chatgpt :type git :host github :repo "emacs-openai/chatgpt"))
+;; (setq openai-key "...") ; in mt-secrets
+;; (openai-completion "I wonder what Lenin would say" #'print :model "babbage-002")
+
+
+;;; Then M-x chatgpt
+  
+;;; 
+(defun reaper ()
+  (interactive)
+  (startup-shell "*reaper*"  "." "reaper"))
 
 
 (provide 'mt-init)
