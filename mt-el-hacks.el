@@ -200,7 +200,9 @@ end tell")
   (interactive)
   (insert "🍩🍩🍩"))
 
+;;; see mt-mac-hacks/org-yank-latest-screenshot
 (defun org-include-image (file)
+  (assert file "File not found")
   (let* ((pos (position 47 file :from-end t))
 	 (filename (substring file (+ pos 1)))
 	 (filename-clean (replace-regexp-in-string "\s" "_" filename))
@@ -290,7 +292,7 @@ Null prefix argument turns off the mode."
 ;;; TODO version of this that takes input from buffers/regions
 ;;; TODO only works from Browser, change name to reflect that.
 
-(defun formatted-yank ()
+(defun org-formatted-yank ()
   "Convert clipboard contents from HTML to Org and then paste (yank)."
   (interactive)
   (kill-new (shell-command-to-string "osascript -e 'the clipboard as \"HTML\"' | perl -ne 'print chr foreach unpack(\"C*\",pack(\"H*\",substr($_,11,-3)))' | pandoc -f html -t org"))

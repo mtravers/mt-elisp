@@ -124,9 +124,10 @@ Set theText to the clipboard" )
 				       (file-modification-time b)))))))
 
 ;; TODO bug, this doesn't always find the latest shot, order is off.
-(defun yank-latest-screenshot ()
+(defun org-yank-latest-screenshot ()
+  "Yank the latest screenshot file into org"
   (interactive)
-  (org-include-image (latest-file (directory-files screenshot-directory t "Screen Shot"))))
+  (org-include-image (latest-file (directory-files screenshot-directory t "Screenshot"))))
 
 ;;; Idea_stupid: yank-latest-window-name (to label screenshots, among other uses). But need to have way to get at previous application.
 
@@ -142,6 +143,41 @@ Set theText to the clipboard" )
   ;alt (yank-chrome-selection)		;except should preserve italics etc (Formatted-yank) but that has its own problems
   (insert "\n#+END_BLOCKQUOTE\n")
   )
+
+;;; Original source: https://oxal.org/blog/powerful-emacs-hacks-paste-images-markdown/
+;;; TODO needs work, ../media is not right. Should use git root probably, or the ./media maybe
+(defun screenshot-from-clipboard ()
+  "Save clipboard image to a uniquely named file in ../media/
+relative to current file, and insert a markdown image link."
+  (interactive)
+  (let* ((basename (file-name-base (buffer-file-name)))
+         (media-dir (expand-file-name "../media/" (file-name-directory (buffer-file-name))))
+         (counter 1)
+         filename)
+
+    ;; Ensure media directory exists
+    (unless (file-exists-p media-dir)
+      (make-directory media-dir t))
+
+    ;; Find a unique filename
+    (setq filename (expand-file-name (format "%s-%d.png" basename counter) media-dir))
+    (while (file-exists-p filename)
+      (setq counter (1+ counter))
+      (setq filename (expand-file-name (format "%s-%d.png" basename counter) media-dir)))
+
+    ;; Save clipboard image using pngpaste
+    (if (eq system-type 'darwin)
+        (call-process "pngpaste" nil nil nil filename)
+      (error "Clipboard image capture only supported on macOS with pngpaste"))
+
+    ;; Insert markdown image link
+    ;; Insert markdown image link with path starting from /media/
+    (when (file-exists-p filename)
+      (insert (format "![](/media/%s)" (file-name-nondirectory filename))))
+
+    (markdown-display-inline-images)
+    (newline)))
+
 
 (provide 'mt-mac-hacks)
 ;;; mt-mac-hacks.el ends here
