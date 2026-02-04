@@ -505,10 +505,22 @@ mouse-3: Remove current window from display")))))))
 
 ;;; Then M-x chatgpt
   
-;;; 
+;;; Claude Code
+
+;;; See https://github.com/manzaltu/claude-code-ide.el
+'(straight-use-package '(claude-code-ide :type git :host github :repo "manzaltu/claude-code-ide.el"))
+
+(use-package vterm)
+(use-package claude-code-ide
+  :straight (:tyoe git :host github :repo "manzaltu/claude-code-ide.el")
+  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
+
+
+
 (defun reaper ()
   (interactive)
   (startup-shell "*reaper*"  "." "reaper"))
-
 
 (provide 'mt-init)
