@@ -116,94 +116,68 @@
  '(cider-repl-history-file "~/.emacs.d/cider-repl-history")
  '(cider-repl-use-pretty-printing t)
  '(clojure-defun-indents
-   '(init-state render render-state will-mount should-update will-receive-props will-update did-update will-unmount))
+   '(init-state render render-state will-mount should-update will-receive-props will-update did-update
+		will-unmount))
  '(comint-process-echoes t)
  '(company-quickhelp-color-background "#4F4F4F")
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(connection-local-criteria-alist
-   '(((:application tramp :machine "localhost")
-      tramp-connection-local-darwin-ps-profile)
+   '(((:application tramp :machine "localhost") tramp-connection-local-darwin-ps-profile)
      ((:application tramp :machine "Mikes-MacBook-Pro.local")
       tramp-connection-local-darwin-ps-profile)
-     ((:application tramp)
-      tramp-connection-local-default-system-profile tramp-connection-local-default-shell-profile)))
+     ((:application tramp) tramp-connection-local-default-system-profile
+      tramp-connection-local-default-shell-profile)))
  '(connection-local-profile-alist
    '((tramp-connection-local-darwin-ps-profile
-      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,uid,user,gid,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state=abcde" "-o" "ppid,pgid,sess,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etime,pcpu,pmem,args")
-      (tramp-process-attributes-ps-format
-       (pid . number)
-       (euid . number)
-       (user . string)
-       (egid . number)
-       (comm . 52)
-       (state . 5)
-       (ppid . number)
-       (pgrp . number)
-       (sess . number)
-       (ttname . string)
-       (tpgid . number)
-       (minflt . number)
-       (majflt . number)
-       (time . tramp-ps-time)
-       (pri . number)
-       (nice . number)
-       (vsize . number)
-       (rss . number)
-       (etime . tramp-ps-time)
-       (pcpu . number)
-       (pmem . number)
-       (args)))
+      (tramp-process-attributes-ps-args "-acxww" "-o"
+					"pid,uid,user,gid,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+					"-o" "state=abcde" "-o"
+					"ppid,pgid,sess,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etime,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format (pid . number) (euid . number) (user . string)
+					  (egid . number) (comm . 52) (state . 5) (ppid . number)
+					  (pgrp . number) (sess . number) (ttname . string)
+					  (tpgid . number) (minflt . number) (majflt . number)
+					  (time . tramp-ps-time) (pri . number) (nice . number)
+					  (vsize . number) (rss . number) (etime . tramp-ps-time)
+					  (pcpu . number) (pmem . number) (args)))
      (tramp-connection-local-busybox-ps-profile
-      (tramp-process-attributes-ps-args "-o" "pid,user,group,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "stat=abcde" "-o" "ppid,pgid,tty,time,nice,etime,args")
-      (tramp-process-attributes-ps-format
-       (pid . number)
-       (user . string)
-       (group . string)
-       (comm . 52)
-       (state . 5)
-       (ppid . number)
-       (pgrp . number)
-       (ttname . string)
-       (time . tramp-ps-time)
-       (nice . number)
-       (etime . tramp-ps-time)
-       (args)))
+      (tramp-process-attributes-ps-args "-o"
+					"pid,user,group,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+					"-o" "stat=abcde" "-o" "ppid,pgid,tty,time,nice,etime,args")
+      (tramp-process-attributes-ps-format (pid . number) (user . string) (group . string)
+					  (comm . 52) (state . 5) (ppid . number) (pgrp . number)
+					  (ttname . string) (time . tramp-ps-time) (nice . number)
+					  (etime . tramp-ps-time) (args)))
      (tramp-connection-local-bsd-ps-profile
-      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,euid,user,egid,egroup,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state,ppid,pgid,sid,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etimes,pcpu,pmem,args")
-      (tramp-process-attributes-ps-format
-       (pid . number)
-       (euid . number)
-       (user . string)
-       (egid . number)
-       (group . string)
-       (comm . 52)
-       (state . string)
-       (ppid . number)
-       (pgrp . number)
-       (sess . number)
-       (ttname . string)
-       (tpgid . number)
-       (minflt . number)
-       (majflt . number)
-       (time . tramp-ps-time)
-       (pri . number)
-       (nice . number)
-       (vsize . number)
-       (rss . number)
-       (etime . number)
-       (pcpu . number)
-       (pmem . number)
-       (args)))
-     (tramp-connection-local-default-shell-profile
-      (shell-file-name . "/bin/sh")
-      (shell-command-switch . "-c"))
-     (tramp-connection-local-default-system-profile
-      (path-separator . ":")
-      (null-device . "/dev/null"))))
+      (tramp-process-attributes-ps-args "-acxww" "-o"
+					"pid,euid,user,egid,egroup,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+					"-o"
+					"state,ppid,pgid,sid,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etimes,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format (pid . number) (euid . number) (user . string)
+					  (egid . number) (group . string) (comm . 52)
+					  (state . string) (ppid . number) (pgrp . number)
+					  (sess . number) (ttname . string) (tpgid . number)
+					  (minflt . number) (majflt . number) (time . tramp-ps-time)
+					  (pri . number) (nice . number) (vsize . number)
+					  (rss . number) (etime . number) (pcpu . number)
+					  (pmem . number) (args)))
+     (tramp-connection-local-default-shell-profile (shell-file-name . "/bin/sh")
+						   (shell-command-switch . "-c"))
+     (tramp-connection-local-default-system-profile (path-separator . ":")
+						    (null-device . "/dev/null"))))
  '(css-indent-offset 2)
- '(custom-enabled-themes '(zenburn))
+; '(custom-enabled-themes '(zenburn))
  '(custom-safe-themes
-   '("9fb561389e5ac5b9ead13a24fb4c2a3544910f67f12cfcfe77b75f36248017d0" "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "28a34dd458a554d34de989e251dc965e3dc72bace7d096cdc29249d60f395a82" "ea5822c1b2fb8bb6194a7ee61af3fe2cc7e2c7bab272cbb498a0234984e1b2d9" "0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963" "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
+   '("9fb561389e5ac5b9ead13a24fb4c2a3544910f67f12cfcfe77b75f36248017d0"
+     "18cf5d20a45ea1dff2e2ffd6fbcd15082f9aa9705011a3929e77129a971d1cb3"
+     "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7"
+     "28a34dd458a554d34de989e251dc965e3dc72bace7d096cdc29249d60f395a82"
+     "ea5822c1b2fb8bb6194a7ee61af3fe2cc7e2c7bab272cbb498a0234984e1b2d9"
+     "0f0a885f4ce5b6f97e33c7483bfe4515220e9cbd9ab3ca798e0972f665f8ee4d"
+     "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26"
+     "388902ac9f9337350975dd03f90167ea62d43b8d8e3cf693b0a200ccbcdd1963"
+     "84890723510d225c45aaff941a7e201606a48b973f0121cb9bcb0b9399be8cba"
+     "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default))
  '(deft-default-extension "org" t)
  '(deft-directory "/opt/mt/working/org-roam/files" t)
  '(deft-recursive t t)
@@ -219,7 +193,8 @@
  '(electric-pair-mode t)
  '(electric-pair-skip-self t)
  '(exec-path
-   '("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin" nil "/usr/local/bin" "/opt/homebrew/bin/"))
+   '("/usr/bin" "/bin" "/usr/sbin" "/sbin" "/Applications/Emacs.app/Contents/MacOS/bin" nil
+     "/usr/local/bin" "/opt/homebrew/bin/"))
  '(explicit-shell-file-name "bash")
  '(fci-rule-color "#383838")
  '(file-precious-flag t)
@@ -234,16 +209,9 @@
    '("SCCS" "RCS" "CVS" "MCVS" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "logs" "log"))
  '(grep-save-buffers nil)
  '(ibuffer-formats
-   '((mark modified read-only " "
-	   (name 30 30 :left :elide)
-	   " "
-	   (size 9 -1 :right)
-	   " "
-	   (mode 16 16 :left :elide)
-	   " " filename-and-process)
-     (mark " "
-	   (name 16 -1)
-	   " " filename)) t)
+   '((mark modified read-only " " (name 30 30 :left :elide) " " (size 9 -1 :right) " "
+	   (mode 16 16 :left :elide) " " filename-and-process)
+     (mark " " (name 16 -1) " " filename)) t)
  '(ido-show-dot-for-dired t)
  '(kept-new-versions 3)
  '(line-move-visual t)
@@ -259,41 +227,42 @@
  '(mode-line-format
    '("%e"
      (:eval
-      (if
-	  (display-graphic-p)
+      (if (display-graphic-p)
 	  #(" " 0 1
-	    (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
+	    (help-echo
+	     "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
 	#("-" 0 1
-	  (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole fr ame\12mouse-3: Remove current window from display"))))
-     mode-line-mule-info mode-line-client mode-line-modified mode-line-remote mode-line-frame-identification mode-line-buffer-identification
+	  (help-echo
+	   "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole fr ame\12mouse-3: Remove current window from display"))))
+     mode-line-mule-info mode-line-client mode-line-modified mode-line-remote
+     mode-line-frame-identification mode-line-buffer-identification
      #("   " 0 3
-       (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
-     mode-line-position
-     (vc-mode vc-mode)
+       (help-echo
+	"mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
+     mode-line-position (vc-mode vc-mode)
      #("  " 0 2
-       (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
+       (help-echo
+	"mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))
      mode-line-modes
      (which-func-mode
       ("" which-func-format
        #(" " 0 1
-	 (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))))
+	 (help-echo
+	  "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))))
      (global-mode-string
       ("" global-mode-string
        #(" " 0 1
-	 (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))))
+	 (help-echo
+	  "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))))
      "  "
      (:eval
-      (propertize
-       (format-time-string "%m/%d %H:%M")
-       'help-echo
-       (concat
-	(format-time-string "%c; ")
-	(emacs-uptime "Uptime:%hh"))))
+      (propertize (format-time-string "%m/%d %H:%M") 'help-echo
+		  (concat (format-time-string "%c; ") (emacs-uptime "Uptime:%hh"))))
      (:eval
-      (unless
-	  (display-graphic-p)
+      (unless (display-graphic-p)
 	#("-%-" 0 3
-	  (help-echo "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))))))
+	  (help-echo
+	   "mouse-1: Select (drag to resize)\12mouse-2: Make current window occupy the whole frame\12mouse-3: Remove current window from display"))))))
  '(nrepl-message-colors
    '("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3"))
  '(nrepl-sync-request-timeout 30)
@@ -308,40 +277,31 @@
  '(org-roam-graph-viewer "/Applications/Firefox.app/Contents/MacOS/firefox")
  '(org-timer-default-timer "5")
  '(package-selected-packages
-   '(google-translate flyparens flylisp forge deft grip-mode emojify nov yo-moma exec-path-from-shell ess rainbow-blocks pdf-tools magit eyebrowse frames-only-mode slime cider yaml-mode workgroups2 w3m unicode-fonts twittering-mode ttl-mode sparql-mode smart-mode-line scala-mode2 save-visited-files rspec-mode rainbow-delimiters pivotal-tracker pig-mode markdown-mode link less-css-mode json-mode js2-mode htmlize helm-open-github helm-itunes groovy-mode gradle-mode fringe-helper eruby-mode dired-toggle-sudo dash-at-point connection color-theme cider-decompile bpe apples-mode ample-theme ack ac-nrepl ac-cider 2048-game))
+   '(google-translate flyparens flylisp forge deft grip-mode emojify nov yo-moma exec-path-from-shell
+		      ess rainbow-blocks pdf-tools magit eyebrowse frames-only-mode slime cider
+		      yaml-mode workgroups2 w3m unicode-fonts twittering-mode ttl-mode sparql-mode
+		      smart-mode-line scala-mode2 save-visited-files rspec-mode rainbow-delimiters
+		      pivotal-tracker pig-mode markdown-mode link less-css-mode json-mode js2-mode
+		      htmlize helm-open-github helm-itunes groovy-mode gradle-mode fringe-helper
+		      eruby-mode dired-toggle-sudo dash-at-point connection color-theme
+		      cider-decompile bpe apples-mode ample-theme ack ac-nrepl ac-cider 2048-game))
  '(package-vc-selected-packages
    '((robby :vc-backend Git :url "https://github.com/stevemolitor/robby")))
  '(pdf-info-epdfinfo-program "~/.emacs.d/straight/repos/pdf-tools/server/epdfinfo")
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-values
-   '((eval add-hook 'after-save-hook 'org-html-export-to-html t t)
-     (elisp-lint-indent-specs
-      (if-let* . 2)
-      (when-let* . 1)
-      (let* . defun)
-      (nrepl-dbind-response . 2)
-      (cider-save-marker . 1)
-      (cider-propertize-region . 1)
-      (cider-map-repls . 1)
-      (cider--jack-in . 1)
-      (cider--make-result-overlay . 1)
-      (insert-label . defun)
-      (insert-align-label . defun)
-      (insert-rect . defun)
-      (cl-defun . 2)
-      (with-parsed-tramp-file-name . 2)
-      (thread-first . 0)
-      (thread-last . 0)
-      (transient-define-prefix . defmacro)
-      (transient-define-suffix . defmacro))
-     (checkdoc-package-keywords-flag)
-     (Package . CL-PPCRE)
-     (Base . 10)
-     (Package . DRAKMA)
-     (Syntax . COMMON-LISP)
-     (package . net.aserve)
-     (Package . CCL)
-     (encoding . utf-8)))
+   '((indent-tabs-mode nil) (eval add-hook 'after-save-hook 'org-html-export-to-html t t)
+     (elisp-lint-indent-specs (if-let* . 2) (when-let* . 1) (let* . defun)
+			      (nrepl-dbind-response . 2) (cider-save-marker . 1)
+			      (cider-propertize-region . 1) (cider-map-repls . 1)
+			      (cider--jack-in . 1) (cider--make-result-overlay . 1)
+			      (insert-label . defun) (insert-align-label . defun)
+			      (insert-rect . defun) (cl-defun . 2) (with-parsed-tramp-file-name . 2)
+			      (thread-first . 0) (thread-last . 0)
+			      (transient-define-prefix . defmacro)
+			      (transient-define-suffix . defmacro))
+     (checkdoc-package-keywords-flag) (Package . CL-PPCRE) (Base . 10) (Package . DRAKMA)
+     (Syntax . COMMON-LISP) (package . net.aserve) (Package . CCL) (encoding . utf-8)))
  '(send-mail-function 'smtpmail-send-it)
  '(sentence-end-double-space nil)
  '(size-indication-mode t)
@@ -352,40 +312,19 @@
  '(typescript-indent-level 2)
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
-   '((20 . "#BC8383")
-     (40 . "#CC9393")
-     (60 . "#DFAF8F")
-     (80 . "#D0BF8F")
-     (100 . "#E0CF9F")
-     (120 . "#F0DFAF")
-     (140 . "#5F7F5F")
-     (160 . "#7F9F7F")
-     (180 . "#8FB28F")
-     (200 . "#9FC59F")
-     (220 . "#AFD8AF")
-     (240 . "#BFEBBF")
-     (260 . "#93E0E3")
-     (280 . "#6CA0A3")
-     (300 . "#7CB8BB")
-     (320 . "#8CD0D3")
-     (340 . "#94BFF3")
-     (360 . "#DC8CC3")))
+   '((20 . "#BC8383") (40 . "#CC9393") (60 . "#DFAF8F") (80 . "#D0BF8F") (100 . "#E0CF9F")
+     (120 . "#F0DFAF") (140 . "#5F7F5F") (160 . "#7F9F7F") (180 . "#8FB28F") (200 . "#9FC59F")
+     (220 . "#AFD8AF") (240 . "#BFEBBF") (260 . "#93E0E3") (280 . "#6CA0A3") (300 . "#7CB8BB")
+     (320 . "#8CD0D3") (340 . "#94BFF3") (360 . "#DC8CC3")))
  '(vc-annotate-very-old-color "#DC8CC3")
  '(vc-follow-symlinks t)
  '(vc-hg-program "/usr/local/bin/hg")
  '(version-control t)
  '(warning-suppress-log-types
-   '(((undo discard-info))
-     ((undo discard-info))
-     ((undo discard-info))
-     ((undo discard-info))
-     ((undo discard-info))
-     ((undo discard-info))))
+   '(((undo discard-info)) ((undo discard-info)) ((undo discard-info)) ((undo discard-info))
+     ((undo discard-info)) ((undo discard-info))))
  '(warning-suppress-types
-   '(((undo discard-info))
-     ((undo discard-info))
-     ((undo discard-info))
-     ((undo discard-info))
+   '(((undo discard-info)) ((undo discard-info)) ((undo discard-info)) ((undo discard-info))
      ((undo discard-info)))))
 
 (custom-set-faces
@@ -394,11 +333,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 160 :width normal :foundry "nil" :family "Menlo"))))
- '(ansi-color-slow-blink ((t (:box nil :underline (:color "pink" :style wave)))))
- ;; Borked in MacOS Sequoia?
- ;; '(fixed-pitch ((t (:family "Dejavu Sans Mono"))))
- ;; '(variable-pitch ((t (:height 1.2 :width normal :family "Gill Sans"))))
- )
+ '(ansi-color-slow-blink ((t (:box nil :underline (:color "pink" :style wave))))))
 
 
 

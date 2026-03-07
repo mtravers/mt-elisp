@@ -132,7 +132,8 @@
 
 ;;; ☒□ R □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
-(use-package ess)
+;;; TEMP causing init problems
+;(use-package ess)
 
 ;;; ☒□ Customizations □☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒□☒
 
@@ -510,7 +511,8 @@ mouse-3: Remove current window from display")))))))
 ;;; See https://github.com/manzaltu/claude-code-ide.el
 '(straight-use-package '(claude-code-ide :type git :host github :repo "manzaltu/claude-code-ide.el"))
 
-(use-package vterm)
+;;; TEMP turned off, has init problems
+;(use-package vterm)
 (use-package claude-code-ide
   :straight (:tyoe git :host github :repo "manzaltu/claude-code-ide.el")
   :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
